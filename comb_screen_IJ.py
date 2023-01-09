@@ -92,9 +92,14 @@ def area_chart(df_canc, unit="Exeter", num_chart=1,
     df_canc = df_canc.set_index(df_canc["cervical"]["Time period"])
     cancers = [*set(df_canc.columns.get_level_values("cancer").tolist())]
     subgroups = [df_canc.loc[df_canc[i]["Area Name"]=="Exeter"][i]["Value"] for i in cancers]
-    fig = plt.figure(figsize=(10,10))
+    fig = plt.figure(figsize=(10,6))
     ax = fig.add_subplot()
+    ax.set_ylim(0,200)
+    ax.legend(loc="best", labels=cancers)
+    ax.set_xlabel(xlabel, fontsize=fontsize)
+    ax.set_ylabel(ylabel, fontsize=fontsize)
     stack = ax.stackplot(subgroups[0].index, subgroups, labels=cancers)
     return stack
 
 test = area_chart(df_full)
+plt.show()

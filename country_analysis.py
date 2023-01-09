@@ -68,7 +68,8 @@ class Country_Analysis(Dataframe_preprocessing):
         
         self.clean_df = self.clean_data_for_country_analysis(self.processed_df)
         
-        self.clean_df.to_csv('country_data.csv')
+        # save data for testing
+        #self.clean_df.to_csv('country_data.csv')
         self.plot_value_across_years()
         
         highest_year = self.get_year_with_highest_val()

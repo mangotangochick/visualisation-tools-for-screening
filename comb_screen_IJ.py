@@ -13,11 +13,20 @@ cerv_df.info()'''
 df_list = [cerv_df, bowel_df, breast_df]
 
 keep_col = ['Area Code', 'Area Name', 'Area Type', 'Time period', 'Value']
-for i in df_list:
-    i = i[keep_col]
-    i = i[i["Time period"] > 2014]
-
+cerv_df = cerv_df[keep_col]
+cerv_df = cerv_df[cerv_df["Time period"] > 2014].reset_index()
+#cerv_df = cerv_df[cerv_df["Area Name"] == "LA"]
 cerv_df
+
+breast_df = breast_df[keep_col]
+breast_df = breast_df[breast_df["Time period"] > 2014].reset_index()
+#breast_df = breast_df[breast_df["Area Name"] == "LA"]
+breast_df
+
+bowel_df = bowel_df[keep_col]
+bowel_df = bowel_df[bowel_df["Time period"] > 2014].reset_index()
+#bowel_df = bowel_df[bowel_df["Area Name"] == "LA"]
+bowel_df
 
 def combine_dfs(df_c, df_bo, df_br, screening_types=["cervical", "bowel", "breast"]):
     '''Takes three data frames of available cancer screening data and 
@@ -54,13 +63,14 @@ def combine_dfs(df_c, df_bo, df_br, screening_types=["cervical", "bowel", "breas
             df_br["Scr type"]=i
             df_lst.append(df_br)
             keys.append(i)
-    df_comb = pd.concat(df_lst, axis="rows", keys=keys, names=["cancer"])
+    df_comb = pd.concat(df_lst, axis="columns", keys=keys, names=["cancer"])
     #df_comb = pd.concat(df_lst, axis="rows")
     return df_comb
 
 
 to_comb=["cervical", "breast", "bowel"]
 df_full = combine_dfs(cerv_df, bowel_df, breast_df, screening_types=to_comb)
+df_full
 '''df_full.columns.get_level_values("cancer").tolist()
 df_full.index.get_level_values("cancer")
 df_full["Value"].loc[df_full["Area Name"]=="Exeter"].loc["cervical"]'''
@@ -96,12 +106,12 @@ def area_chart(df_canc, unit="Exeter", num_chart=1,
     fontsize: int
         the size of the font to use for the text elements in the graph
     '''
-    df_canc = df_canc.set_index(df_canc.loc["cervical"]["Time period"])
+    df_canc = df_canc.set_index(df_canc["cervical"]["Time period"])
     cancers = [*set(df_canc.columns.get_level_values("cancer").tolist())]
     subgroups = [df_canc.loc[df_canc[i]["Area Name"]=="Exeter"][i]["Value"] for i in cancers]
     fig = plt.figure(figsize=(10,6))
     ax = fig.add_subplot()
-    ax.set_ylim(0,200)
+    ax.set_ylim(0,300)
     ax.legend(loc="best", labels=cancers)
     ax.set_xlabel(xlabel, fontsize=fontsize)
     ax.set_ylabel(ylabel, fontsize=fontsize)

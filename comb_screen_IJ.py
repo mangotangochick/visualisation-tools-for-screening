@@ -47,17 +47,18 @@ def combine_dfs(df_c, df_bo, df_br, screening_types=["cervical", "bowel", "breas
         elif i == "breast":
             df_lst.append(df_br)
             keys.append(i)
-    df_comb = pd.concat(df_lst, axis="columns", keys=keys, names=["cancer", "index"])
+    df_comb = pd.concat(df_lst, axis="columns", keys=keys, names=["cancer"])
     return df_comb
 
 
-to_comb=["cervical", "bowel", "breast"]
+to_comb=["cervical", "breast"]
 df_full = combine_dfs(cerv_df, bowel_df, breast_df, screening_types=to_comb)
-df_full.head()
-df_full.index.get_level_values("cancer")
-df_full["Value"].loc[df_full["Area Name"]=="Exeter"].loc["cervical"]
 
-df_full["Time period"].loc[df_full["Area Name"]=="Exeter"].tolist()
+'''df_full.columns.get_level_values("cancer").tolist()
+df_full.index.get_level_values("cancer")
+df_full["Value"].loc[df_full["Area Name"]=="Exeter"].loc["cervical"]'''
+
+
 
 def area_chart(df_canc, unit="Exeter", num_chart=1, 
                chart_title = "Area Chart", xlabel="Years", 
@@ -88,24 +89,12 @@ def area_chart(df_canc, unit="Exeter", num_chart=1,
     fontsize: int
         the size of the font to use for the text elements in the graph
     '''
-    x=df_canc["Time period"].loc[df_canc["Area Name"]==unit].tolist()
-    cancers = [*set(df_canc.index.get_level_values("cancer"))]
-    subgroups = [df_canc["Value"].loc[df_canc["Area Name"]==unit].loc[i] for i in cancers]  
-    fig = plt.figure(figsize=(12,3))
+    df_canc = df_canc.set_index(df_canc["cervical"]["Time period"])
+    cancers = [*set(df_canc.columns.get_level_values("cancer").tolist())]
+    subgroups = [df_canc.loc[df_canc[i]["Area Name"]=="Exeter"][i]["Value"] for i in cancers]
+    fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot()
-    ax.stackplot(df_canc.index.get_level_values("cancer"), subgroups, labels=cancers)
-    _ = ax.plot(df_canc["Value"].loc[df_full["Area Name"]==unit].loc[])
+    stack = ax.stackplot(subgroups[0].index, subgroups, labels=cancers)
+    return stack
 
 test = area_chart(df_full)
-
-
-#Creating the area chart 
-ax = plt.gca()
-ax.stackplot(x, y, labels=['A','B','C'],alpha=0.5)
-#Adding the aesthetics
-plt.legend(loc='upper left')
-plt.title('Chart title')
-plt.xlabel('X axis title')
-plt.ylabel('Y axis title') 
-#Show the plot
-plt.show()

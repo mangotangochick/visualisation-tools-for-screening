@@ -12,6 +12,8 @@ cerv_df.info()'''
 
 keep_col = ['Area Code', 'Area Name', 'Area Type', 'Time period', 'Value', 'Lower CI limit', 'Upper CI limit']
 cerv_df = cerv_df[keep_col]
+bowel_df = bowel_df[keep_col]
+breast_df = breast_df[keep_col]
 
 def combine_dfs(df_c, df_bo, df_br, screening_types=["cervical", "bowel", "breast"]):
     '''Takes three data frames of available cancer screening data and 
@@ -45,7 +47,7 @@ def combine_dfs(df_c, df_bo, df_br, screening_types=["cervical", "bowel", "breas
         elif i == "breast":
             df_lst.append(df_br)
             keys.append(i)
-    df_comb = pd.concat(df_lst, axis="rows", keys=keys, names=["cancer", "index"])
+    df_comb = pd.concat(df_lst, axis="columns", keys=keys, names=["cancer", "index"])
     return df_comb
 
 
@@ -53,7 +55,8 @@ to_comb=["cervical", "bowel", "breast"]
 df_full = combine_dfs(cerv_df, bowel_df, breast_df, screening_types=to_comb)
 df_full.head()
 df_full.index.get_level_values("cancer")
-df_full["Value"].loc[df_full["Area Name"]=="Exeter"].loc["cervical"].tolist()
+df_full["Value"].loc[df_full["Area Name"]=="Exeter"].loc["cervical"]
+
 df_full["Time period"].loc[df_full["Area Name"]=="Exeter"].tolist()
 
 def area_chart(df_canc, unit="Exeter", num_chart=1, 
@@ -85,16 +88,15 @@ def area_chart(df_canc, unit="Exeter", num_chart=1,
     fontsize: int
         the size of the font to use for the text elements in the graph
     '''
-    y=[]
-    x=df_canc["Time period"].loc[df_full["Area Name"]==unit].tolist()
+    x=df_canc["Time period"].loc[df_canc["Area Name"]==unit].tolist()
     cancers = [*set(df_canc.index.get_level_values("cancer"))]
-    for i in cancers:
-        y.append([df_canc["Value"].loc[df_full["Area Name"]==unit].loc[i].tolist()])
+    subgroups = [df_canc["Value"].loc[df_canc["Area Name"]==unit].loc[i] for i in cancers]  
     fig = plt.figure(figsize=(12,3))
     ax = fig.add_subplot()
-    ax.plot()
+    ax.stackplot(df_canc.index.get_level_values("cancer"), subgroups, labels=cancers)
+    _ = ax.plot(df_canc["Value"].loc[df_full["Area Name"]==unit].loc[])
 
-
+test = area_chart(df_full)
 
 
 #Creating the area chart 

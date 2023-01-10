@@ -87,7 +87,7 @@ fig = px.bar(df_year, x='Area Name', y='Value',
              color='Area Name', text='rank',
              color_discrete_map= dict_color,
              animation_frame='Time period',
-             animation_group='Station code',
+             animation_group='Area Name',
              range_y=[65, 80],
              labels={ 'Value': 'Proportion Screened, %'},
             )

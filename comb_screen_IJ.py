@@ -12,7 +12,7 @@ cerv_df.info()'''
 
 df_list = [cerv_df, bowel_df, breast_df]
 
-keep_col = ['Area Code', 'Area Name', 'Area Type', 'Time period', 'Value']
+keep_col = ['Area Code', 'Area Name', 'Area Type', 'Time period', 'Value', 'Count']
 cerv_df = cerv_df[keep_col]
 cerv_df = cerv_df[cerv_df["Time period"] > 2014].reset_index()
 #cerv_df = cerv_df[cerv_df["Area Name"] == "LA"]
@@ -108,7 +108,8 @@ def area_chart(df_canc, unit="Exeter", num_chart=1,
     '''
     df_canc = df_canc.set_index(df_canc["cervical"]["Time period"])
     cancers = [*set(df_canc.columns.get_level_values("cancer").tolist())]
-    subgroups = [df_canc.loc[df_canc[i]["Area Name"]=="Exeter"][i]["Value"] for i in cancers]
+    subgroups = [df_canc.loc[df_canc[i]["Area Name"]==unit][i]["Value"] for i in cancers]
+    print(subgroups)
     fig = plt.figure(figsize=(10,6))
     ax = fig.add_subplot()
     ax.set_ylim(0,300)

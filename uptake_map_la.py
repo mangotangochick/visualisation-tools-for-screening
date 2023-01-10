@@ -7,13 +7,17 @@ from matplotlib.colors import LinearSegmentedColormap
 
 
 df = pd.read_pickle('data/cerv_data_clean.pkl')
+df['Time period']
 
-def plot_uk_map(df):
+def plot_uk_map(df, time_period = int):
     '''
-    Plots and saves a UK map displaying the screening uptake by local authority
+    Plots and saves a UK map displaying the screening uptake by local authority, excluding London
+
+    By default will create a map of the UK with the mean screening values for each local authority by year, unless a year is specified (int)
     
     Parameters:
     df (pandas DataFrame): DataFrame with local authority codes and screening uptake values. 
+    time_period (int): Year of interest
     
     Returns:
     None
@@ -22,6 +26,26 @@ def plot_uk_map(df):
     loc_auth = gpd.read_file(\
     'shape_files/Local_Authority_Districts_(December_2022)_Boundaries_UK_BFC/LAD_DEC_2022_UK_BFC.shp')
     print(loc_auth.LAD22CD)
+
+    # Define Time-periods
+    if time_period == 2010:
+        df = df.loc[df['Time period'] == 2010]
+    elif time_period == 2011:
+        df = df.loc[df['Time period'] == 201]
+    elif time_period == 2012:
+        df = df.loc[df['Time period'] == 2012]
+    elif time_period == 2013:
+        df = df.loc[df['Time period'] == 2013]
+    elif time_period == 2014:
+        df = df.loc[df['Time period'] == 2014]
+    elif time_period == 2015:
+        df = df.loc[df['Time period'] == 2015]
+    elif time_period == 2016:
+        df = df.loc[df['Time period'] == 2016]
+    else:
+        df = df
+
+    df['Value'] = df.groupby('Time period')['Value'].transform(lambda x: x.fillna(x.mean()))
 
     # Merge shapefile with dataset
     uk_map = loc_auth.merge(df, left_on='LAD22CD', right_on='Area Code')
@@ -45,16 +69,15 @@ def plot_uk_map(df):
 
     plt.title('UK Screening Uptake by Local Authority', fontsize=50)
 
-
     # Add local authority labels
     for idx, row in uk_map.iterrows():
         plt.annotate(row['Area Name'], xy=(row['geometry'].centroid.x, row['geometry'].centroid.y),
                 horizontalalignment='center', fontsize=10)
 
     plt.figure(dpi=300)
-    plt.savefig('UK_Local_Authorities_Screening_Heatmap', bbox_inches='tight')
+    plt.savefig('UK_Local_Authorities_Screening_Heatmap')
     plt.show()
     return None
 
-plot_uk_map(df)
+plot_uk_map(df, time_period = 2015)
 

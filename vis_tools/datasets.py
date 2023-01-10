@@ -13,7 +13,7 @@ load_breast: loads data from breast screening file from 2010 to 2016.
 '''
 import pandas as pd      
 
-def basic_data_cleaning(df, age=bool, sex=bool, deprivation=bool):
+def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
     """
     Function for basic data cleaning of an NHS screening uptake dataset.
     It is possible to choose if to include age, sex and deprivation status. 
@@ -34,24 +34,28 @@ def basic_data_cleaning(df, age=bool, sex=bool, deprivation=bool):
     df: pandas DataFrame
         cleaned dataframe    
     """
-    df = df.read_check('data/cervical_cancer_data.csv')
-
     # Fill NaNs
     df['Category Type'].fillna('NA', inplace=True)
+    
+    # Dropping "Cl_L3_..." values representing types of areas.
+    df = df[df['Area Code'].str.contains('E')]
+    # Columns we want to keep. 
     keep_col = ['Area Code', 'Area Name', 'Area Type', 'Time period', 'Value']
-    if age==True:
-        keep_col.append('Age')
-    if sex==True:
-        keep_col.append('Sex')
+
     if deprivation==True:
-        keep_col.append('Category Type', 'Category')
+        df = df[df['Category Type'].str.contains('deprivation deciles in England')]
+    else:
+        if age == True:
+            keep_col.append('Age')
+        if sex == True:
+            keep_col.append('Sex')
 
     # Remove Unnecessary Columns
     df = df[keep_col]
     return df
 
 
-def load_cerv(age=bool, sex=bool, deprivation=bool):
+def load_cerv(age=True, sex=True, deprivation=True):
     '''
     Loads data from local a file on cervical cancer screening. 
     The file includes data on the percentage of women in the resident
@@ -73,11 +77,11 @@ def load_cerv(age=bool, sex=bool, deprivation=bool):
         cleaned dataframe    
     '''  
     cerv_data = pd.read_csv('data/cervical_cancer_data.csv')
-    cerv_data = basic_data_cleaning(cerv_data, age=bool, sex=bool, 
-                                    deprivation=bool)
+    cerv_data = basic_data_cleaning(cerv_data, age=age, sex=sex, 
+                                     deprivation=deprivation)
     return cerv_data
 
-def load_bowel(age=bool, sex=bool, deprivation=bool):
+def load_bowel(age=True, sex=True, deprivation=True):
     '''
     Loads data from local file on bowel cancer screening. 
     The file includes data on the percentage of people in the resident
@@ -99,11 +103,11 @@ def load_bowel(age=bool, sex=bool, deprivation=bool):
         cleaned dataframe    
     '''
     bowel_data = pd.read_csv('data/bowel_cancer_data.csv')  
-    bowel_data = basic_data_cleaning(bowel_data, age=bool, sex=bool, 
-                                     deprivation=bool)
+    bowel_data = basic_data_cleaning(bowel_data, age=age, sex=sex, 
+                                     deprivation=deprivation)
     return bowel_data
 
-def load_breast(age=bool, sex=bool, deprivation=bool):
+def load_breast(age=True, sex=True, deprivation=True):
     '''
     Loads data from local file on breast cancer screening. 
     The file includes data on the percentage of people in the resident
@@ -125,6 +129,9 @@ def load_breast(age=bool, sex=bool, deprivation=bool):
         cleaned dataframe    
     '''
     breast_data = pd.read_csv('data/breast_cancer_data.csv')
-    breast_data = basic_data_cleaning(breast_data, age=bool, sex=bool, 
-                                     deprivation=bool)
+    breast_data = basic_data_cleaning(breast_data, age=age, sex=sex, 
+                                     deprivation=deprivation)
     return breast_data
+
+df = load_cerv(False, False, False)
+df.shape

@@ -1,13 +1,10 @@
 '''
 Tools for simple descriptive visualisations of screening data.
 
-Example of the rest:
-These methods might serve as the forecast themselves, but are more likely
-to be used as a baseline to evaluate if more complex models offer a sufficient
-increase in accuracy to justify their use.
+These tools might be useful to gain a better understanding of the statistical
+properties of the dataset at hand. 
 
-Naive1:
-    Carry last value forward across forecast horizon (random walk)
+Carry last value forward across forecast horizon (random walk)
 
 SNaive:
     Carry forward value from last seasonal period
@@ -21,3 +18,125 @@ Drift:
 EnsembleNaive:
     An unweighted average of all of the Naive forecasting methods.
 '''
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+# from vis_tools import datasets as ds
+
+def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
+    """
+    Function for basic data cleaning of an NHS screening uptake dataset.
+    It is possible to choose if to include age, sex and deprivation status. 
+
+    Parameters
+    ----------
+    df: pandas DataFrame
+        DataFrame containing the data to be explored.
+    age: bool
+        If True, then includes age information
+    sex: bool
+        If True, then includes sex information
+    deprivation: bool
+        If True, then includes "Category type" and "Category columns", which
+        describe deprivation groups. 
+    Returns
+    -------
+    df: pandas DataFrame
+        cleaned dataframe    
+    """
+    # Fill NaNs
+    df['Category Type'].fillna('NA', inplace=True)
+    
+    # Dropping "Cl_L3_..." values representing types of areas.
+    df = df[df['Area Code'].str.contains('E')]
+    # Columns we want to keep. 
+    keep_col = ['Area Code', 'Area Name', 'Area Type', 'Time period', 'Value']
+
+    if deprivation==True:
+        df = df[df['Category Type'].str.contains('deprivation deciles in England')]
+    else:
+        if age == True:
+            keep_col.append('Age')
+        if sex == True:
+            keep_col.append('Sex')
+
+    # Remove Unnecessary Columns
+    df = df[keep_col]
+    return df
+
+
+df = pd.read_csv('data/breast_cancer_data.csv')
+df = basic_data_cleaning(df)
+
+class Analysis_Plot:
+    
+    def __init__(self):
+        self.fig = plt.figure()
+        self.ax = self.fig.add_subplot()
+        self.ax.tick_params(axis='both', labelsize=12)
+        self.ax.grid(linestyle='--')
+
+    def title(self, title, fontsize):
+        self.ax.set_title(title).set_fontsize(fontsize)
+
+    def x_label(self, x_label):
+        self.ax.set_xlabel(x_label, fontsize=12)
+    
+    def y_label(self, y_label):
+        self.ax.set_ylabel(y_label, fontsize=12)
+
+    def fontsize(self, fontsize):
+        self.ax.xaxis.label.set_size(fontsize)
+        self.ax.yaxis.label.set_size(fontsize)
+    
+    def legend(self, include_leg):
+        self.legend_visible = bool
+        
+    def update_legend(self):
+        if self.legend_visible:
+            self.ax.legend()
+    
+    def figure_size(self, figsize):
+        self.fig.set_size_inches(figsize)
+    
+    def adjust_fig(self, title="Plot", x_label="X", y_label="Y", fontsize=12, include_leg=True, figsize=(8,5)):
+        self.title(title, fontsize)
+        self.x_label(x_label)
+        self.y_label(y_label)
+        self.fontsize(fontsize)
+        self.legend(include_leg)
+        self.update_legend()
+        self.figure_size(figsize)
+
+# Histogram of any float values:
+def hist(df, col, title="Plot", x_label="X", y_label="Y", fontsize=12, include_leg=True, figsize=(8,5)):
+    plot_o = Analysis_Plot()
+    plot_o.adjust_fig(title=title, x_label=x_label, y_label=y_label, fontsize=fontsize, include_leg=include_leg, figsize=figsize)
+    _=plot_o.ax.hist(df[col])
+    plt.show()
+
+def clean_data_for_area_analysis(df, area_name):
+    df = df[df['Area Name'] == area_name]
+    keep = ['Time period', 'Value']
+    df = df[keep]
+    df.rename(columns={'Time period':'year'}, inplace=True)
+    # set index to year
+    df.set_index('year', inplace=True)
+    return df
+
+# can plot area, or region data over time. 
+def area_analysis(in_df, area_name, fontsize=12, include_leg=True, figsize=(8,5)):
+    in_df = clean_data_for_area_analysis(in_df, area_name)
+    title = f"{area_name} Screening Coverage Over the Years"
+    x_label = 'Year'
+    y_label = 'Value'
+    plot = Analysis_Plot()
+    plot.adjust_fig(title=title, x_label=x_label, y_label=y_label, fontsize=fontsize, include_leg=include_leg, figsize=figsize)
+    plot.ax.plot(in_df['Value'], 'co-', label=area_name)
+    plt.show()
+
+hist(df, 'Value', figsize=(8,5))
+area_analysis(df, 'Exeter')
+
+
+

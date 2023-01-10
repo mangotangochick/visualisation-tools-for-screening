@@ -1,17 +1,24 @@
-''' 
-Examople:
+'''
+Testing the built-in datasets.
+'''
 import pytest
-
-from forecast_tools import datasets as ds
-
-
-def test_load_ed_shape():
-    expected_shape = (344, 1)
-    df = ds.load_emergency_dept()
-    assert df.shape == expected_shape
+from vis_tools import datasets as ds
 
 
-def test_load_ed_freq():
-    expected_freq = 'D'
-    df = ds.load_emergency_dept()
-    assert df.index.freq.freqstr == expected_freq'''
+def test_col_pres(cancer_type):
+    '''
+    Tests if recquired columns are in the dataset.
+    '''
+    columns = ['Area Code', 'Area Name', 'Area Type', 'Time period',
+    'Value', 'Age', 'Sex', 'Category Name', 'Category']
+    if cancer_type.lower() == 'breast':
+        data = ds.load_breast()
+    elif cancer_type.lower() == 'bowel':
+        data = ds.load_bowel()
+    elif cancer_type.lower() == 'cervical':
+        data = ds.load_cerv()
+    df_columns = list(data.columns)
+    assert columns in df_columns == True
+
+
+test_col_pres('cervical')

@@ -5,8 +5,8 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-
 df = pd.read_pickle('data/cerv_data_clean.pkl')
+
 
 def plot_uk_map(df):
     '''

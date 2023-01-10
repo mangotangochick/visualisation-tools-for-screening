@@ -8,7 +8,7 @@ from matplotlib.colors import LinearSegmentedColormap
 
 df = pd.read_pickle('data/cerv_data_clean.pkl')
 
-def plot_uk_map(df, time_period = int):
+def plot_uk_map(df, time_period = int, val_labels = bool):
     '''
     Plots and saves a UK map displaying the screening uptake by local authority, excluding London
 
@@ -17,14 +17,15 @@ def plot_uk_map(df, time_period = int):
     Parameters:
     df (pandas DataFrame): DataFrame with local authority codes and screening uptake values. 
     time_period (int): Year of interest
-    
+    val_labels(bool): Set to True to add Annotation to map of % uptakes; Default = False
+
     Returns:
     None
     '''
 
     loc_auth = gpd.read_file(\
     'shape_files/Local_Authority_Districts_(December_2022)_Boundaries_UK_BFC/LAD_DEC_2022_UK_BFC.shp')
-    
+
     # Define Time-periods
     if time_period == 2010:
         df = df.loc[df['Time period'] == 2010]
@@ -69,8 +70,9 @@ def plot_uk_map(df, time_period = int):
     for idx, row in uk_map.iterrows():
         plt.annotate(row['Area Name'], xy=(row['geometry'].centroid.x, row['geometry'].centroid.y),
                 horizontalalignment='center', fontsize=15)
-        plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 6000),
-                horizontalalignment='right', fontsize=15)
+        if val_labels == True:
+            plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 6000),
+                    horizontalalignment='right', fontsize=15)
 
     plt.figure(dpi=300)
 
@@ -82,5 +84,5 @@ def plot_uk_map(df, time_period = int):
     plt.show()
     return None
 
-plot_uk_map(df)
+plot_uk_map(df, val_labels=True)
 

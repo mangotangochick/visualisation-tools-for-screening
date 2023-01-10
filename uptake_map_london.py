@@ -10,7 +10,7 @@ loc_auth = gpd.read_file(\
 
 df = pd.read_pickle('data/cerv_data_clean.pkl')
 
-def plot_london_map(df, time_period = int):
+def plot_london_map(df, time_period = int, val_labels = bool):
     '''
     Plots and saves a London map displaying the screening uptake by boroughs
 
@@ -19,6 +19,7 @@ def plot_london_map(df, time_period = int):
     Parameters:
     df (pandas DataFrame): DataFrame with local authority codes and screening uptake values. 
     time_period (int): Year of interest
+    val_labels(bool): Set to True to add Annotation to map of % uptakes
     
     Returns:
     None
@@ -45,7 +46,7 @@ def plot_london_map(df, time_period = int):
     else:
         mean_values = df.groupby('Area Name')['Value'].mean().to_dict()
         df['Value'] = df['Area Name'].map(mean_values)
-        
+
     # Merge shapefile with dataset
     ldn_map = loc_auth.merge(df, left_on='GSS_CODE', right_on='Area Code')
 
@@ -71,8 +72,9 @@ def plot_london_map(df, time_period = int):
         for idx, row in ldn_map.iterrows():
                     plt.annotate(row['Area Name'], xy=(row['geometry'].centroid.x, row['geometry'].centroid.y),
                             horizontalalignment='center', fontsize=15)
-                    plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 500),
-                            horizontalalignment='right', fontsize=15)
+                    if val_labels == True:
+                        plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 500),
+                                horizontalalignment='right', fontsize=15)
 
     plt.figure(dpi=300)
 

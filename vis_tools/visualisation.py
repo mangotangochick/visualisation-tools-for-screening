@@ -25,7 +25,6 @@ import plotly.express as px
 import os
 #from vis_tools import datasets as ds
 
-
 def basic_data_cleaning(df, age=bool, sex=bool):
 
     """
@@ -87,7 +86,7 @@ class UKMap:
         None
         '''
         loc_auth = gpd.read_file(\
-            '~/visualisation-tools-for-screening/data/shape_files/London_Borough_Excluding_MHW.shp')
+            'data/shape_files/LAD_DEC_2022_UK_BFC.shp')
 
         # Define Time-periods
         if self.time_period == 2010:
@@ -140,9 +139,9 @@ class UKMap:
         plt.figure(dpi=300)
 
         if type(self.time_period) == int:
-            plt.savefig(f'UK_Screening_Heatmap_{self.time_period}')
+            plt.savefig(f'UK_Screening_Heatmap_{self.time_period}.png')
         else:
-            plt.savefig('UK_Screening_Heatmap_Means')
+            plt.savefig('UK_Screening_Heatmap_Means.png')
 
         plt.show()
         return None
@@ -168,7 +167,7 @@ class LondonMap():
         
     def plot_london_map(self):
         loc_auth = gpd.read_file(\
-        '~/visualisation-tools-for-screening/data/shape_files/London_Borough_Excluding_MHW.shp')
+        'data/shape_files/London_Borough_Excluding_MHW.shp')
 
         # Define Time-periods
         if self.time_period == 2010:
@@ -221,9 +220,9 @@ class LondonMap():
         plt.figure(dpi=300)
 
         if type(self.time_period) == int:
-            plt.savefig(f'London_Screening_Heatmap_{self.time_period}')
+            plt.savefig(f'London_Screening_Heatmap_{self.time_period}.png')
         else:
-            plt.savefig('London_Screening_Heatmap_Means')
+            plt.savefig('London_Screening_Heatmap_Means.png')
 
         plt.show()
         return None

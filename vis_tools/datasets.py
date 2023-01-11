@@ -77,8 +77,7 @@ def load_cerv(age=True, sex=True, deprivation=False):
     cerv_data: pandas DataFrame
         cleaned dataframe    
     '''  
-    file_path = os.path.join(os.pardir, 'data', 'cervical_cancer_data.csv')
-    cerv_data = pd.read_csv(file_path)
+    cerv_data = pd.read_csv('data/cervical_cancer_data.csv')
     cerv_data = basic_data_cleaning(cerv_data, age=age, sex=sex, 
                                      deprivation=deprivation)
     return cerv_data

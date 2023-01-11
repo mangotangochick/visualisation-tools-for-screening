@@ -26,15 +26,6 @@ import os
 #from vis_tools import datasets as ds
 
 
-# Importing the 
-loc_auth = gpd.read_file(\
-    '~/visualisation-tools-for-screening/data/shape_files/Local_Authority_Districts_(December_2022)_Boundaries_UK_BFC/LAD_DEC_2022_UK_BFC.shp')
-
-
-
-### To be deleted
-cerv_data = pd.read_csv('data/cervical_cancer_data.csv')
-
 def basic_data_cleaning(df, age=bool, sex=bool):
 
     """
@@ -177,7 +168,7 @@ class LondonMap():
         
     def plot_london_map(self):
         loc_auth = gpd.read_file(\
-        '~/visualisation-tools-for-screening/data/shape_files/statistical-gis-boundaries-london/London_Borough_Excluding_MHW.shp')
+        '~/visualisation-tools-for-screening/data/shape_files/London_Borough_Excluding_MHW.shp')
 
         # Define Time-periods
         if self.time_period == 2010:

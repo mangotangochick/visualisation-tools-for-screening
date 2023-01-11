@@ -1,19 +1,14 @@
 '''
 Tools for simple descriptive visualisations of screening data.
-
 These tools might be useful to gain a better understanding of the statistical
 properties of the dataset at hand. 
-
 Analysis_Plot:
     Provides customisability to the graphs.
-
 histogram():
     Plots a histogram of the chosen float column.
-
 area_analysis():
     Allows the user to choose an area and graph its proportion of patients
     screened over time.
-
 linear_comp:
     Allows the user to choose areas to compare in an over the time analysis.
 '''
@@ -22,7 +17,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 class Analysis_Plot:
-    
+    '''
     Creates an empty matplotlib.pyplot figure as an object.
     Atributes:
     ----------
@@ -51,7 +46,6 @@ class Analysis_Plot:
         self.ax = self.fig.add_subplot()
         self.ax.tick_params(axis='both', labelsize=12)
         self.ax.grid(linestyle='--')
-
     def title(self, title, fontsize=12):
         '''
         Adds title and changes its fontsize.
@@ -62,7 +56,6 @@ class Analysis_Plot:
         fontsize: int
             size of font for title'''
         self.ax.set_title(title).set_fontsize(fontsize)
-
     def x_label(self, x_label):
         '''
         Adds a chosen label to the x axis.
@@ -260,10 +253,7 @@ def linear_comp(df, area_list, title="Plot", fontsize=12, include_leg=True,
                           figsize=figsize)
         plt.show()
 
-
-
 # Some testing, does not work atm, because of imports.
-hist(df, 'Value', figsize=(8,5))
-area_analysis(df, 'Exeter')
-linear_comp(df, ['Exeter', 'Mid Sussex', 'Horsham'])
-
+# hist(df, 'Value', figsize=(8,5))
+# area_analysis(df, 'Exeter')
+# linear_comp(df, ['Exeter', 'Mid Sussex', 'Horsham'])

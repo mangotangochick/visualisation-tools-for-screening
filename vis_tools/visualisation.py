@@ -15,11 +15,14 @@ import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+import os
 #from vis_tools import datasets as ds
+
 
 # Importing the 
 loc_auth = gpd.read_file(\
     '~/data/London_Borough_Excluding_MHW.shp')
+
 
 
 ### To be deleted

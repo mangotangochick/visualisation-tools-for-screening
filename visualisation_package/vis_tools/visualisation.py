@@ -15,13 +15,13 @@ animated_bars(): part of Rank_Graph class
     Creates an animated, interactive bar chart of the ranking of a chosen list
     of areas over time.
 '''
+import os
 import pandas as pd
 import geopandas as gpd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import plotly.express as px
-import os
 #from vis_tools import datasets as ds
 
 import requests
@@ -781,7 +781,7 @@ class Rank_Based_Graph:
         Parameters:
         ----------
         area_type: str
-            either a "Reagion", "UA, or "LA", default = "Region"
+            either a "Region", "UA, or "LA", default = "Region"
         '''
         # Slicing the dataframe:
         self.df = self.df[self.df["Area Type"]==area_type]

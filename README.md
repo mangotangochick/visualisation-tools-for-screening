@@ -30,8 +30,6 @@ This python package contains three subfolders: 'vis_tools', 'data' and 'testing'
 # Installation
 `pip install visualisation-tools-for-screening`
 
-# Troubleshooting Common Errors
-
 # External Resources and References 
 (1) Blanks, R.G. (2000) “Effect of NHS breast screening programme on mortality from breast cancer in England and Wales, 1990-8: Comparison of observed with predicted mortality,” BMJ, 321(7262), pp. 665–669. Available at: https://doi.org/10.1136/bmj.321.7262.665. 
 

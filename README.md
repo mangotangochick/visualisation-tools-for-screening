@@ -7,7 +7,7 @@ In the UK, there are three national screening programmes for cancer: bowel, brea
 
 Screening uptake datasets can be used to help inform public health policy around screening services, and can provide valuable insights into the effectiveness of current screening programmes. The python package accompanying this user guide offers visualisation tools to help analyse screening uptake datasets, allowing users to quickly and easily create visualisations of relevant data that can be used to inform policy and decision making, especially with application to the National Health Service (NHS) screening programmes for bowel, breast and cervical cancer. 
 
-The package can be used to clean and pre-process NHS screening uptake datasets and generate a variety of different visualisations and can be customised to display data in formats such as histograms, bar charts, lineplots and heatmaps, making it easy to compare different years and regions. This package can be used to display trends in screening uptake over time, and can be used to identify potential areas for improvement in screening uptake. 
+The package can be used to clean and pre-process NHS screening uptake datasets and generate a variety of different visualisations and can be customised to display data in formats such as histograms, bar charts, lineplots and choropleth maps, making it easy to compare different years and regions. This package can be used to display trends in screening uptake over time, and can be used to identify potential areas for improvement in screening uptake. 
 
 # Organisation Overview and Feature Description
 ![Feature Overview Map](feature_overview.png?raw=true "Feature Overview Map")
@@ -16,7 +16,7 @@ This python package contains three subfolders: 'vis_tools', 'data' and 'testing'
 * *vis_tools* contains files necessary to execute visualisations
     * datasets.py : contains functions for loading and pre-processing NHS screening uptake datasets for cervical, breast and bowel cancer
     * baseline.py : contains classes and functions necessary for creating basic summary statistic graphs, such as histograms and line plots
-    * visualisation.py : contains classes and functions for more advanced visualisation tools, such as geographical heatmaps
+    * visualisation.py : contains classes and functions for more advanced visualisation tools, such as geographical choropleth maps and rank-based change graphs
 * *data* contains sample data files
     * bowel_cancer_data.csv : dataset containing bowel cancer screening programme uptake across the UK from 2010-2016
     * breast_cancer_data.csv : dataset containing breast cancer screening programme uptake across the UK from 2010-2016

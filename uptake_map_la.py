@@ -11,7 +11,7 @@ df = pd.read_pickle('data/cerv_data_clean.pkl')
 
 class UK_Map:
     '''
-    Plots and saves a UK map displaying the screening uptake by local authority, excluding London.
+    Plots and saves a UK choropleth map displaying the screening uptake by local authority, excluding London.
     '''
 
     def __init__(self, df, time_period = int, val_labels = bool):
@@ -21,7 +21,7 @@ class UK_Map:
 
     def plot_uk_map(self):
         '''
-        Plots and saves a UK map displaying the screening uptake by local authority, excluding London
+        Plots and saves a UK choropleth map displaying the screening uptake by local authority, excluding London
 
         By default will create a map of the UK with the mean screening values for each local authority by year, unless a year is specified (int)
         
@@ -81,6 +81,7 @@ class UK_Map:
             plt.annotate(row['Area Name'], xy=(row['geometry'].centroid.x, row['geometry'].centroid.y),
                     horizontalalignment='center', fontsize=15)
             if self.val_labels == True:
+                plt.title(f'UK Screening Uptake by Local Authority in {self.time_period} with % uptake shown', fontsize=50)
                 plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 6000),
                         horizontalalignment='right', fontsize=15)
 

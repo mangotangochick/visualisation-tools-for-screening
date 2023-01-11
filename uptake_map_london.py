@@ -13,7 +13,7 @@ df = pd.read_pickle('data/cerv_data_clean.pkl')
 
 class LondonMap():
     """
-    Plots and saves a London map displaying the screening uptake by boroughs. 
+    Plots and saves a London choropleth map displaying the screening uptake by boroughs. 
     
     Parameters:
     df (pandas DataFrame): DataFrame with local authority codes and screening uptake values. 
@@ -30,6 +30,19 @@ class LondonMap():
         self.val_labels = val_labels
         
     def plot_london_map(self):
+        """
+        plot_london_map() plots a choropleth map of London Boroughs with a color gradient based on a value of 'Value' in the DataFrame df. 
+        The color gradient depends on the given 'time_period' value, or the mean value of 'Value' if 'time_period' is not specified. 
+        The map can optionally display the value of 'Value' for each London Borough by setting 'val_labels' to True.
+
+        Parameters:
+            self (object): An object containing the necessary information for plotting the map.
+            time_period (int, optional): A year between 2010 and 2016 to display a map of 'Value' for that year. Defaults to the mean value of 'Value'.
+            val_labels (bool, optional): Displays the value of 'Value' for each London Borough if set to True. Defaults to False.
+
+        Returns:
+            None: A choropleth map of London Boroughs is plotted.
+        """
         loc_auth = gpd.read_file(\
         'shape_files/statistical-gis-boundaries-london/London_Borough_Excluding_MHW.shp')
 
@@ -70,16 +83,18 @@ class LondonMap():
             for idx, row in ldn_map.iterrows():
                 plt.annotate(row['Area Name'], xy=(row['geometry'].centroid.x, row['geometry'].centroid.y),
                         horizontalalignment='center', fontsize=15)
-                plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 500),
-                        horizontalalignment='right', fontsize=15)
+                if self.val_labels == True:
+                    plt.title(f'UK Screening Uptake by London Borough in {self.time_period} with % uptake shown', fontsize=50)
+                    plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 500),
+                            horizontalalignment='right', fontsize=15)
         else:
             plt.title(f'UK Screening Uptake by London Borough Means', fontsize=50)
             for idx, row in ldn_map.iterrows():
-                        plt.annotate(row['Area Name'], xy=(row['geometry'].centroid.x, row['geometry'].centroid.y),
-                                horizontalalignment='center', fontsize=15)
-                        if self.val_labels == True:
-                            plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 500),
-                                    horizontalalignment='right', fontsize=15)
+                plt.annotate(row['Area Name'], xy=(row['geometry'].centroid.x, row['geometry'].centroid.y),
+                        horizontalalignment='center', fontsize=15)
+                if self.val_labels == True:
+                    plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 500),
+                            horizontalalignment='right', fontsize=15)
 
         plt.figure(dpi=300)
 

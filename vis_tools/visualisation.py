@@ -96,7 +96,7 @@ class UKMap:
         None
         '''
         loc_auth = gpd.read_file(\
-            '~/visualisation-tools-for-screening/data/shape_files/statistical-gis-boundaries-london/London_Borough_Excluding_MHW.shp')
+            '~/visualisation-tools-for-screening/data/shape_files/London_Borough_Excluding_MHW.shp')
 
         # Define Time-periods
         if self.time_period == 2010:

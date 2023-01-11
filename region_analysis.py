@@ -54,7 +54,12 @@ class Region_Analysis(Dataframe_preprocessing):
         self.directory_name = 'Shapefiles'
         
         # Main function to create and display Plotly express (interactable) choropleth map of regions
-        self.create_map_of_all_regions_for_year()
+        was_error = self.create_map_of_all_regions_for_year()
+        
+        # If an error was encountered creating the map
+        if was_error:
+            # Indicate this to the user
+            print('Creating map of regions failed. Please see previous logs for more information.')
         
     def error_prevention_directory_check(self):
         # Check if the directory exists
@@ -76,9 +81,19 @@ class Region_Analysis(Dataframe_preprocessing):
         region_codes = self.get_all_region_area_codes()
         
         # Create a shapefile that includes all regions (country map)
-        self.create_combined_map_shapefile(region_codes)
-        # Present user with interactable map
-        self.display_map()
+        was_error = self.create_combined_map_shapefile(region_codes)
+        
+        # If no error was encountered creating the map shapefile
+        if not was_error:
+            # Present user with interactable map
+            self.display_map()
+            
+            # Return a negative boolean to indicate no error was encountered
+            return False
+        # If an error was encountered creating the map shapefile
+        else:
+            # Return a positive boolean to indicate an error was encountered
+            return True
         
                 
     def get_all_region_area_codes(self):
@@ -150,14 +165,26 @@ class Region_Analysis(Dataframe_preprocessing):
         self.error_prevention_directory_check()
         
         # Create the dataframe that holds all of the region map data (combining all individual dataframes)
-        geodataframe = self.create_combined_map_geodf(area_codes)
+        geodataframe, was_error = self.create_combined_map_geodf(area_codes)
         
-        # Set the output path for the shapefile
-        outfp = f'{self.directory_name}/combined_shapefile.shp'
-        # Create the shapefile
-        geodataframe.to_file(outfp)
+        # If no error was encountered creating the map dataframe
+        if not was_error:
+            # Set the output path for the shapefile
+            outfp = f'{self.directory_name}/combined_shapefile.shp'
+            # Create the shapefile
+            geodataframe.to_file(outfp)
+            
+            # Return negative boolean to indicate no error was encountered
+            return False
+        # If an error was encountered creating the map dataframe
+        else:
+            # Return a positive boolean to indicate an error was encountered
+            return True
+            
         
     def create_combined_map_geodf(self, area_codes):
+        encountered_error = False
+        
         # Create a geopandas dataframe with the same structure as the individual region dataframes
         merged_df = gpd.GeoDataFrame()
         merged_df['geometry'] = None
@@ -171,12 +198,19 @@ class Region_Analysis(Dataframe_preprocessing):
             # Update the current region of focus
             self.current_area_code = code
             # Create a dataframe for the current region
-            geodf = self.create_region_geodf(code)
-            # Concatenate the region dataframe with the combined dataframe 
-            merged_df = gpd.GeoDataFrame(pd.concat([merged_df, geodf], ignore_index=True))
+            geodf, was_error = self.create_region_geodf(code)
+            
+            # If no error was encountered creating dataframe
+            if not was_error:
+                # Concatenate the region dataframe with the combined dataframe 
+                merged_df = gpd.GeoDataFrame(pd.concat([merged_df, geodf], ignore_index=True))
+            # If an error was encountered creating dataframe
+            else:
+                # Set error boolean to True to return error state to calling method
+                encountered_error = True
         
         # Return the combined dataframe
-        return merged_df
+        return merged_df, encountered_error
 
         
         
@@ -185,36 +219,69 @@ class Region_Analysis(Dataframe_preprocessing):
         self.error_prevention_directory_check()
         
         # Create the dataframe for the region
-        geodataframe = self.create_region_geodf(area_code)
+        geodataframe, was_error = self.create_region_geodf(area_code)
         
-        # Set the output path for the region shapefile
-        outfp = f'{self.directory_name}/{area_code}_shapefile.shp'
-        # Create the shapefile
-        geodataframe.to_file(outfp)
+        # If no error was encountered creating the dataframe
+        if not was_error:
+            # Set the output path for the region shapefile
+            outfp = f'{self.directory_name}/{area_code}_shapefile.shp'
+            # Create the shapefile
+            geodataframe.to_file(outfp)
+            return False
+        # If an error was encountered creating the dataframe
+        else:
+            print('Error creating region shapefile')
+            return True
+            
         
     def create_region_geodf(self, area_code):
         # Get the polygon coordinates data from the API request
-        geoshape = self.get_geoshape_info_from_api_request_for_areacode(area_code)
-        # Convert the API data to usable coordinates
-        polygon_coordinates = self.convert_geoshape_to_polygon_coordinates(geoshape)
-        # Create a geopandas dataframe using the cooridnates for the region
-        geodataframe = self.create_geodataframe_with_area_data(polygon_coordinates)
-        # Return the created dataframe
-        return geodataframe
+        geoshape, was_error = self.get_geoshape_info_from_api_request_for_areacode(area_code)
+        
+        # If no error encountered requesting API data
+        if not was_error:
+            # Convert the API data to usable coordinates
+            polygon_coordinates = self.convert_geoshape_to_polygon_coordinates(geoshape)
+            # Create a geopandas dataframe using the cooridnates for the region
+            geodataframe = self.create_geodataframe_with_area_data(polygon_coordinates)
+            # Return the created dataframe, and a negative boolean to indicate no errors were encountered
+            return geodataframe, False
+        
+        # If an error is encountered when requesting data
+        else:
+            # Indicate error to the user
+            print('Error creating region geopandas dataframe: API request failed')
+            # Return empty dataframe, and a positive boolean to indicate an error was encountered
+            return gpd.GeoDataFrame(), True
         
         
     def get_geoshape_info_from_api_request_for_areacode(self, area_code):
         # Create the API GET request for the specified region
         api_str = f'https://public.opendatasoft.com/api/records/1.0/search/?dataset=georef-united-kingdom-region&q=rgn_code={area_code}'
+                
+        # Process API GET request and store response from server
+        response = requests.get(api_str)
+        
+        # If API request fails
+        if response.status_code != 200:
+            # Return empty string as request faied, along with positive boolean to indicate there was an error to abort further processing attempts
+            return str(), True
+            
+        
         # Collect the JSON response from the API
-        json_response = requests.get(api_str).json()
+        json_response = response.json()
+        
+        # Check number of matches for API query - if zero matches, return an error as it failed to find the area
+        if json_response['nhits'] == 0:
+            # Return empty string as request faied, along with positive boolean to indicate there was an error to abort further processing attempts
+            return str(), True
+        
 
         # Retrieve the polygon coordinates data string from the JSON response
         shape_info = str(json_response['records'][0]['fields']['geo_shape']['coordinates'])
-        # Return the coordinate information
-        return shape_info
+        # Return the coordinate information and negative boolean to indicate no errors encountered
+        return shape_info, False
     
-    # ERROR CHECKING! & unit test   
     
     def recursive_check_for_polygon_coords(self, parent_lst):
         # Initialise an empty list to hold polygon coordinates

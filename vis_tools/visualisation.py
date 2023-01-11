@@ -71,7 +71,7 @@ def basic_data_cleaning(df, age=bool, sex=bool):
     return df
 
 
-class UK_Map:
+class UKMap:
     '''
     Plots and saves a UK map displaying the screening uptake by local authority, excluding London.
     '''
@@ -177,29 +177,29 @@ class LondonMap():
         
     def plot_london_map(self):
         loc_auth = gpd.read_file(\
-        'shape_files/statistical-gis-boundaries-london/London_Borough_Excluding_MHW.shp')
+        '~/visualisation-tools-for-screening/data/shape_files/statistical-gis-boundaries-london/London_Borough_Excluding_MHW.shp')
 
         # Define Time-periods
         if self.time_period == 2010:
-            df = df.loc[df['Time period'] == 2010]
+            self.df = self.df.loc[self.df['Time period'] == 2010]
         elif self.time_period == 2011:
-            df = df.loc[df['Time period'] == 2011]
+            self.df = self.df.loc[self.df['Time period'] == 2011]
         elif self.time_period == 2012:
-            df = df.loc[df['Time period'] == 2012]
+            self.df = self.df.loc[self.df['Time period'] == 2012]
         elif self.time_period == 2013:
-            df = df.loc[df['Time period'] == 2013]
+            self.df = self.df.loc[self.df['Time period'] == 2013]
         elif self.time_period == 2014:
-            df = df.loc[df['Time period'] == 2014]
+            self.df = self.df.loc[self.df['Time period'] == 2014]
         elif self.time_period == 2015:
-            df = df.loc[df['Time period'] == 2015]
+            self.df = self.df.loc[self.df['Time period'] == 2015]
         elif self.time_period == 2016:
-            df = df.loc[df['Time period'] == 2016]
+            self.df = self.df.loc[self.df['Time period'] == 2016]
         else:
-            mean_values = df.groupby('Area Name')['Value'].mean().to_dict()
-            df['Value'] = df['Area Name'].map(mean_values)
+            mean_values = self.df.groupby('Area Name')['Value'].mean().to_dict()
+            self.df['Value'] = self.df['Area Name'].map(mean_values)
 
         # Merge shapefile with dataset
-        ldn_map = loc_auth.merge(df, left_on='GSS_CODE', right_on='Area Code')
+        ldn_map = loc_auth.merge(self.df, left_on='GSS_CODE', right_on='Area Code')
 
         # Set figure size
         plt.figure(figsize=(20, 10))

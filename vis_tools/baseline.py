@@ -267,5 +267,3 @@ hist(df, 'Value', figsize=(8,5))
 area_analysis(df, 'Exeter')
 linear_comp(df, ['Exeter', 'Mid Sussex', 'Horsham'])
 
-
-

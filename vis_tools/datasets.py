@@ -11,7 +11,8 @@ load_cerv: loads data from cervical screening file from 2010 to 2016.
 load_bowel: loads data from bowel screening file from 2015 to 2016.
 load_breast: loads data from breast screening file from 2010 to 2016.
 '''
-import pandas as pd      
+import pandas as pd     
+import os 
 
 def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
     """
@@ -38,6 +39,7 @@ def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
     
     # Dropping "Cl_L3_..." values representing types of areas.
     df = df[df['Area Code'].str.contains('E')]
+    
     # Columns we want to keep. 
     keep_col = ['Area Code', 'Area Name', 'Area Type', 'Time period', 'Value']
 
@@ -54,7 +56,7 @@ def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
     return df
 
 
-def load_cerv(age=True, sex=True, deprivation=True):
+def load_cerv(age=True, sex=True, deprivation=False):
     '''
     Loads data from local a file on cervical cancer screening. 
     The file includes data on the percentage of women in the resident
@@ -75,7 +77,8 @@ def load_cerv(age=True, sex=True, deprivation=True):
     cerv_data: pandas DataFrame
         cleaned dataframe    
     '''  
-    cerv_data = pd.read_csv('data/cervical_cancer_data.csv')
+    file_path = os.path.join(os.pardir, 'data', 'cervical_cancer_data.csv')
+    cerv_data = pd.read_csv(file_path)
     cerv_data = basic_data_cleaning(cerv_data, age=age, sex=sex, 
                                      deprivation=deprivation)
     return cerv_data

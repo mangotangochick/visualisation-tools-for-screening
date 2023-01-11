@@ -158,11 +158,3 @@ def linear_comp(df, area_list, title="Plot", fontsize=12, include_leg=True, figs
     plot_o.adjust_fig(title=title, x_label=x_label, y_label=y_label, fontsize=fontsize, include_leg=include_leg, figsize=figsize)
     plt.show()
 
-
-file_path = os.path.join(os.pardir, 'data', 'breast_cancer_data.csv')
-df = pd.read_csv(file_path)
-df = basic_data_cleaning(df)
-hist(df, 'Value', figsize=(8,5))
-area_analysis(df, 'Exeter')
-linear_comp(df, ['Exeter', 'Mid Sussex', 'Horsham'])
-

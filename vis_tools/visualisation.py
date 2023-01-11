@@ -18,7 +18,8 @@ from matplotlib.colors import LinearSegmentedColormap
 #from vis_tools import datasets as ds
 
 # Importing the 
-loc_auth = gpd.read_file('shape_files/statistical-gis-boundaries-london/London_Borough_Excluding_MHW.shp')
+loc_auth = gpd.read_file(\
+    '~/data/London_Borough_Excluding_MHW.shp')
 
 
 ### To be deleted
@@ -85,7 +86,7 @@ class UK_Map:
         None
         '''
         loc_auth = gpd.read_file(\
-        'shape_files/Local_Authority_Districts_(December_2022)_Boundaries_UK_BFC/LAD_DEC_2022_UK_BFC.shp')
+            '~/visualisation-tools-for-screening/data/LAD_DEC_2022_UK_BFC.shp')
 
         # Define Time-periods
         if self.time_period == 2010:

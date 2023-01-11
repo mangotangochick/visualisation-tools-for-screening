@@ -11,17 +11,18 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pypi-template",
+    name="visualisation-tools-for-screening666",
     version=__version__,
-    author="Thomas Monks",
+    author="Ieva, Frances, Alistair",
     # I've created a specific email account before and forwarded to my own.
-    author_email="generic@genericemail.com",
+    author_email="ij229@exeter.ac.uk",
     license="The MIT License (MIT)",
-    description="A short, but useful description to appear on pypi",
+    description="A collection of tools to aid with visualisation of screening\
+        uptake data",
     # read in from readme.md and will appear on PyPi
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/health-data-science-OR/pypi-template",
+    url="https://github.com/mangotangochick/visualisation-tools-for-screening.git",
     packages=setuptools.find_packages(),
     # if true look in MANIFEST.in for data files to include
     include_package_data=True,

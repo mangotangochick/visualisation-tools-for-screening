@@ -1,8 +1,9 @@
-name: vis_tools_env
+name: visualise
 channels:
   - conda-forge
   - defaults
 dependencies:
+  - _ipython_minor_entry_point=8.7.0=h3b92ee0_0
   - anyio=3.6.2=pyhd8ed1ab_0
   - appnope=0.1.3=pyhd8ed1ab_0
   - argon2-cffi=21.3.0=pyhd8ed1ab_0
@@ -21,9 +22,9 @@ dependencies:
   - cffi=1.14.6=py38h9688ba1_0
   - charset-normalizer=2.1.1=pyhd8ed1ab_0
   - comm=0.1.2=pyhd8ed1ab_0
-  - cryptography=39.0.0=py38ha6c3189_0
+  - cryptography=38.0.4=py38ha6c3189_0
   - cycler=0.11.0=pyhd8ed1ab_0
-  - debugpy=1.6.5=py38h4cd09af_0
+  - debugpy=1.6.4=py38h4cd09af_0
   - decorator=5.1.1=pyhd8ed1ab_0
   - defusedxml=0.7.1=pyhd8ed1ab_0
   - entrypoints=0.4=pyhd8ed1ab_0
@@ -31,10 +32,10 @@ dependencies:
   - flit-core=3.8.0=pyhd8ed1ab_0
   - freetype=2.12.1=h3f81eb7_1
   - idna=3.4=pyhd8ed1ab_0
-  - importlib-metadata=6.0.0=pyha770c72_0
-  - importlib_resources=5.10.2=pyhd8ed1ab_0
-  - ipykernel=6.20.1=pyh736e0ef_0
-  - ipython=8.8.0=pyhd1c38e8_0
+  - importlib-metadata=5.2.0=pyha770c72_0
+  - importlib_resources=5.10.1=pyhd8ed1ab_1
+  - ipykernel=6.19.4=pyh736e0ef_0
+  - ipython=8.7.0=pyhd1c38e8_0
   - ipython_genutils=0.2.0=py_1
   - jedi=0.18.2=pyhd8ed1ab_0
   - jinja2=3.1.2=pyhd8ed1ab_1
@@ -43,11 +44,11 @@ dependencies:
   - jsonschema=4.17.3=pyhd8ed1ab_0
   - jupyter-packaging=0.7.12=pyhd8ed1ab_0
   - jupyter_client=7.4.8=pyhd8ed1ab_0
-  - jupyter_core=5.1.3=py38h50d1736_0
+  - jupyter_core=5.1.1=py38h50d1736_0
   - jupyter_server=1.23.4=pyhd8ed1ab_0
   - jupyterlab=3.0.9=pyhd8ed1ab_0
   - jupyterlab_pygments=0.2.2=pyhd8ed1ab_0
-  - jupyterlab_server=2.18.0=pyhd8ed1ab_0
+  - jupyterlab_server=2.17.0=pyhd8ed1ab_0
   - kiwisolver=1.4.4=py38h98b9b1b_1
   - lcms2=2.14=h29502cd_1
   - lerc=4.0.0=hb486fe8_0
@@ -58,7 +59,6 @@ dependencies:
   - libffi=3.3=h046ec9c_2
   - libgfortran=5.0.0=11_3_0_h97931a8_27
   - libgfortran5=11.3.0=h082f757_27
-  - libjpeg-turbo=2.1.4=hb7f2c08_0
   - liblapack=3.9.0=16_osx64_openblas
   - libopenblas=0.3.21=openmp_h429af6e_3
   - libpng=1.6.39=ha978bb4_0
@@ -95,7 +95,7 @@ dependencies:
   - patsy=0.5.3=pyhd8ed1ab_0
   - pexpect=4.8.0=pyh1a96a4e_2
   - pickleshare=0.7.5=py_1003
-  - pillow=9.4.0=py38h48932a6_0
+  - pillow=9.2.0=py38hf04c7c8_4
   - pip=21.0.1=pyhd8ed1ab_0
   - pkgutil-resolve-name=1.3.10=pyhd8ed1ab_0
   - platformdirs=2.6.2=pyhd8ed1ab_0
@@ -106,10 +106,10 @@ dependencies:
   - ptyprocess=0.7.0=pyhd3deb0d_0
   - pure_eval=0.2.2=pyhd8ed1ab_0
   - pycparser=2.21=pyhd8ed1ab_0
-  - pygments=2.14.0=pyhd8ed1ab_0
-  - pyopenssl=23.0.0=pyhd8ed1ab_0
+  - pygments=2.13.0=pyhd8ed1ab_0
+  - pyopenssl=22.1.0=pyhd8ed1ab_0
   - pyparsing=3.0.9=pyhd8ed1ab_0
-  - pyrsistent=0.19.3=py38hef030d1_0
+  - pyrsistent=0.19.2=py38hef030d1_0
   - pysocks=1.7.1=pyha2e5f31_6
   - python=3.8.8=h4e93d89_0_cpython
   - python-dateutil=2.8.2=pyhd8ed1ab_0
@@ -132,7 +132,7 @@ dependencies:
   - tinycss2=1.2.1=pyhd8ed1ab_0
   - tk=8.6.12=h5dbffcc_0
   - tornado=6.2=py38hef030d1_1
-  - traitlets=5.8.1=pyhd8ed1ab_0
+  - traitlets=5.8.0=pyhd8ed1ab_0
   - typing-extensions=4.4.0=hd8ed1ab_0
   - typing_extensions=4.4.0=pyha770c72_0
   - urllib3=1.26.13=pyhd8ed1ab_0
@@ -148,31 +148,30 @@ dependencies:
   - zlib=1.2.13=hfd90126_4
   - zstd=1.5.2=hfa58983_4
   - pip:
-    - bcj-cffi==0.5.1
-    - click==8.1.3
-    - click-plugins==1.1.1
-    - cligj==0.7.2
-    - exceptiongroup==1.1.0
-    - fiona==1.8.22
-    - geopandas==0.12.2
-    - iniconfig==2.0.0
-    - joblib==1.2.0
-    - multivolumefile==0.2.3
-    - munch==2.5.0
-    - plotly==5.11.0
-    - plotly-express==0.4.1
-    - pluggy==1.0.0
-    - ppmd-cffi==0.3.3
-    - py7zr==0.14.1
-    - pycryptodome==3.16.0
-    - pyproj==3.4.1
-    - pytest==7.2.0
-    - pyzstd==0.14.4
-    - scikit-learn==0.24.1
-    - seaborn==0.12.2
-    - shapely==2.0.0
-    - tenacity==8.1.0
-    - texttable==1.6.7
-    - threadpoolctl==3.1.0
-    - tomli==2.0.1
-prefix: /Users/franceseslabra/opt/anaconda3/envs/vis_tools_env
+      - bcj-cffi==0.5.1
+      - click==8.1.3
+      - click-plugins==1.1.1
+      - cligj==0.7.2
+      - exceptiongroup==1.1.0
+      - fiona==1.8.22
+      - geopandas==0.12.2
+      - iniconfig==2.0.0
+      - joblib==1.2.0
+      - multivolumefile==0.2.3
+      - munch==2.5.0
+      - plotly==5.11.0
+      - pluggy==1.0.0
+      - ppmd-cffi==0.3.3
+      - py7zr==0.14.1
+      - pycryptodome==3.16.0
+      - pyproj==3.4.1
+      - pyshp==2.3.1
+      - pytest==7.2.0
+      - pyzstd==0.14.4
+      - scikit-learn==0.24.1
+      - seaborn==0.12.2
+      - shapely==2.0.0
+      - tenacity==8.1.0
+      - texttable==1.6.7
+      - threadpoolctl==3.1.0
+      - tomli==2.0.1

@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 class Analysis_Plot:
-    
+    '''
     Creates an empty matplotlib.pyplot figure as an object.
     Atributes:
     ----------
@@ -60,7 +60,8 @@ class Analysis_Plot:
         title: str
             title of the graph
         fontsize: int
-            size of font for title'''
+            size of font for title
+        '''
         self.ax.set_title(title).set_fontsize(fontsize)
 
     def x_label(self, x_label):
@@ -90,7 +91,8 @@ class Analysis_Plot:
         Parameters:
         ----------
         fontsize:
-            size of the font for the axis labels'''
+            size of the font for the axis labels
+        '''
         self.ax.xaxis.label.set_size(fontsize)
         self.ax.yaxis.label.set_size(fontsize)
     
@@ -100,7 +102,8 @@ class Analysis_Plot:
         Parameters:
         ----------
         include_leg: bool
-            If True, includes the legend'''
+            If True, includes the legend
+        '''
         if include_leg:
             self.ax.legend()
     

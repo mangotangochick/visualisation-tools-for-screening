@@ -21,6 +21,8 @@ EnsembleNaive:
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os 
+
 # from vis_tools import datasets as ds
 
 def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
@@ -64,8 +66,8 @@ def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
     df = df[keep_col]
     return df
 
-
-df = pd.read_csv('data/breast_cancer_data.csv')
+file_path = os.path.join(os.pardir, 'data', 'breast_cancer_data.csv')
+df = pd.read_csv(file_path)
 df = basic_data_cleaning(df)
 
 class Analysis_Plot:

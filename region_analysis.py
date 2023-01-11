@@ -20,20 +20,23 @@ import plotly.express as px
 import pyproj
 import os
 
-data_str = 'https://data.england.nhs.uk/dataset/dbf14bed-85bc-4aef-856c-38eb9d6de730/resource/e281a471-f546-44b9-99f1-12e80b27a638/download/220iicancerscreeningcoveragecervicalcancer.data.csv'
-
-# read url file into a dataframe
-df = pd.read_csv(data_str)
-
 
 
 class Dataframe_preprocessing:
     
-    def __init__(self, init_df):
-        self.processed_df = self.preprocess_data(init_df)
+    def __init__(self):
+        self.init_df = self.initialise_df()
+        self.processed_df = self.preprocess_data()
         
-    def preprocess_data(self, in_df):
-        temp_df = in_df
+    def initialise_df(self):
+        data_str = 'https://data.england.nhs.uk/dataset/dbf14bed-85bc-4aef-856c-38eb9d6de730/resource/e281a471-f546-44b9-99f1-12e80b27a638/download/220iicancerscreeningcoveragecervicalcancer.data.csv'
+
+        
+        # read url file into a dataframe
+        return pd.read_csv(data_str)
+        
+    def preprocess_data(self):
+        temp_df = self.init_df
         temp_df = temp_df.drop(labels=['Sex'], axis=1)
         temp_df = temp_df.drop(labels=['Age'], axis=1)
         temp_df = temp_df.drop(labels=['Lower CI limit'], axis=1)
@@ -43,12 +46,12 @@ class Dataframe_preprocessing:
     
 class Region_Analysis(Dataframe_preprocessing):
     
-    def __init__(self, init_df, in_year):
-        super().__init__(init_df)
+    def __init__(self, in_year):
+        super().__init__()
         self.year = in_year
         self.directory_name = 'Shapefiles'
         
-        self.create_map_of_all_regions_for_year(init_df)
+        self.create_map_of_all_regions_for_year()
         
     def error_prevention_directory_check(self):
         # check if directory exists
@@ -60,8 +63,8 @@ class Region_Analysis(Dataframe_preprocessing):
             print('Created directory')
         
     
-    def create_map_of_all_regions_for_year(self, in_df):
-        self.regions_df = self.get_all_regions(in_df)
+    def create_map_of_all_regions_for_year(self):
+        self.regions_df = self.get_all_regions()
         region_codes = self.get_all_region_area_codes()
         
         self.create_combined_map_shapefile(region_codes)
@@ -217,13 +220,13 @@ class Region_Analysis(Dataframe_preprocessing):
         return newdata
             
     
-    def get_all_regions(self, in_df):
-        filtered_df = in_df[in_df['Time period'] == self.year]
+    def get_all_regions(self):
+        filtered_df = self.init_df[self.init_df['Time period'] == self.year]
         return filtered_df[filtered_df['Area Type'] == 'Region']
     
-    
-    
-region_test = Region_Analysis(df, 2016)
+
+# example of how to use region analysis class    
+#region_test = Region_Analysis(2016)
 
 
     

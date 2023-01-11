@@ -27,7 +27,6 @@ import ast
 from fiona.crs import from_epsg
 import shapefile as shp # pyshp
 import pyproj
-import os
 
 def basic_data_cleaning(df, age=bool, sex=bool):
 

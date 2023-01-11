@@ -65,6 +65,20 @@ def basic_data_cleaning(df, age=bool, sex=bool):
 
 
 class Dataframe_preprocessing:
+        
+    """
+    Class that includes methods for downloading and basic cleaning of an NHS screening uptake dataset,
+    to be inherited from by analysis classes. Allows for increased expandability of the code.
+    
+         
+    Parameters
+    ----------
+    None
+    
+    Returns
+    -------
+    None 
+    """
     
     def __init__(self):
         # Create pandas dataframe from online dataset
@@ -73,6 +87,21 @@ class Dataframe_preprocessing:
         self.processed_df = self.preprocess_data()
         
     def initialise_df(self):
+        """
+        Function to download the dataset and read it into a pandas dataframe.
+        
+             
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        pd.read_csv(data_str): pandas dataframe
+            The pandas dataframe created with the screening data 
+        """
+        
+        
         # URL for screening dataset
         data_str = 'https://data.england.nhs.uk/dataset/dbf14bed-85bc-4aef-856c-38eb9d6de730/resource/e281a471-f546-44b9-99f1-12e80b27a638/download/220iicancerscreeningcoveragecervicalcancer.data.csv'
 
@@ -80,6 +109,20 @@ class Dataframe_preprocessing:
         return pd.read_csv(data_str)
         
     def preprocess_data(self):
+        """
+        Function to clean the pandas dataframe - removing redundant columns.
+        
+             
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        temp_df: pandas dataframe
+            The updated dataframe
+        """
+        
         # Get the original dataset
         temp_df = self.init_df
         # Remove the redundant columns from dataframe
@@ -92,6 +135,25 @@ class Dataframe_preprocessing:
 
     
 class Region_Analysis(Dataframe_preprocessing):
+    """
+    Class to create a choropleth map of the country to show the percentage uptake of screening for each
+    region in a speicified year. 
+    
+    This class handles making an API GET request to recieve shapefile polygon
+    cooridnate data, transforming the data, and plotting it to visualise the region category data.
+    
+    This class inherits from the 'Dataframe_preprocessing' class, and therefore shares all its methods.
+    
+         
+    Parameters
+    ----------
+    in_year: int
+        The 'Time Period' to filter the dataset to; the year in focus for analysis (e.g. 2010).
+    
+    Returns
+    -------
+    None
+    """
     
     def __init__(self, in_year):
         super().__init__()
@@ -109,6 +171,21 @@ class Region_Analysis(Dataframe_preprocessing):
             print('Creating map of regions failed. Please see previous logs for more information.')
         
     def error_prevention_directory_check(self):
+        """
+        Function to check if the desired output directory exists, in order to mitigate errors from
+        arising whilst attempting to access the directory. If the directory does not exist, it will be
+        created in this function to prevent an errors.
+        
+             
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+        """
+        
         # Check if the directory exists
         exists = os.path.exists(self.directory_name)
         # If the directory doesn't already exist
@@ -122,6 +199,23 @@ class Region_Analysis(Dataframe_preprocessing):
         
     
     def create_map_of_all_regions_for_year(self):
+        """
+        Function to handle the creation of the choropleth map. For increased readbility, re-usability, and
+        expandability, the main steps of this process are broken into separate functions, which are called
+        and evaluated here.
+        
+             
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        True/False: Boolean
+            This value indicates whether or not (respectively) an error was encountered in attempting
+            to create the map
+        """
+        
         # Create a filtered dataframe of only the regions (only for specified time period)
         self.regions_df = self.get_all_regions()
         # Create a list of 'Area Code's for all regions for accessing regions & querying dataset
@@ -144,6 +238,20 @@ class Region_Analysis(Dataframe_preprocessing):
         
                 
     def get_all_region_area_codes(self):
+        """
+        Function to get the 'Area Code' for all of the regions in the dataset.
+        
+             
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        region_codes: list
+            A list of 'Area Code's, each representing a region in the dataset.
+        """
+        
         # Initialise empty list to hold the 'Area Code's
         region_codes = []
         
@@ -156,6 +264,20 @@ class Region_Analysis(Dataframe_preprocessing):
         return region_codes
     
     def display_map(self):
+        """
+        Function to create a Plotly express choropleth map figure utilising the geopandas dataframe
+        and display it to the user
+        
+             
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+        """
+        
         # Check that the shapefiles directory exists before attempting to retrieve files, in order to prevent an error
         self.error_prevention_directory_check()
         
@@ -189,6 +311,20 @@ class Region_Analysis(Dataframe_preprocessing):
         
     
     def display_area_polygon(self, area_code):
+        """
+        Function to create a matplotlib rendering of the region polygon, and display it to the user.
+        
+             
+        Parameters
+        ----------
+        area_code: string
+            The 'Area Code' for the region whose data has been collected.
+        
+        Returns
+        -------
+        None
+        """
+        
         # Check that the shapefiles directory exists before attempting to retrieve files, in order to prevent an error
         self.error_prevention_directory_check()
         
@@ -208,6 +344,21 @@ class Region_Analysis(Dataframe_preprocessing):
         
         
     def create_combined_map_shapefile(self, area_codes):
+        """
+        Function to create a shapefile for the country map that combines individual region shapefile data;
+        creating a combined dataframe to be used in the creation of the shapefile.
+        
+             
+        Parameters
+        ----------
+        area_codes: list
+            A list of 'Area Code's, each representing a region in the dataset.
+        
+        Returns
+        -------
+        None
+        """
+        
         # Check that the shapefiles directory exists before attempting to save files, in order to prevent an error
         self.error_prevention_directory_check()
         
@@ -230,6 +381,24 @@ class Region_Analysis(Dataframe_preprocessing):
             
         
     def create_combined_map_geodf(self, area_codes):
+        """
+        Function to create a geopandas dataframe for the country map shapefile that combines
+        individual region geopandas dataframes
+        
+             
+        Parameters
+        ----------
+        area_codes: list
+            A list of 'Area Code's, each representing a region in the dataset.
+        
+        Returns
+        -------
+        merged_df: geopandas dataframe
+            The combined dataframe of individual region dataframes; holding coordinate data for shapely polygons.
+        encountered_error: Boolean
+            A positive or negative boolean value indicating that an error was/wasn't (respectively) encountered.
+        """
+        
         encountered_error = False
         
         # Create a geopandas dataframe with the same structure as the individual region dataframes
@@ -262,6 +431,21 @@ class Region_Analysis(Dataframe_preprocessing):
         
         
     def create_region_shapefile(self, area_code):
+        """
+        Function to create a shapefile for an individual region in the dataset.
+        
+             
+        Parameters
+        ----------
+        area_code: string
+            The 'Area Code' for the region whose data has been collected.
+        
+        Returns
+        -------
+        True/False: Boolean
+            A positive or negative boolean value indicating that an error was/wasn't (respectively) encountered.
+        """
+        
         # Check that the shapefiles directory exists before attempting to save files, in order to prevent an error
         self.error_prevention_directory_check()
         
@@ -282,6 +466,21 @@ class Region_Analysis(Dataframe_preprocessing):
             
         
     def create_region_geodf(self, area_code):
+        """
+        Function to create geopandas dataframe for an individual region.
+        
+             
+        Parameters
+        ----------
+        area_code: string
+            The 'Area Code' for the region whose data has been collected.
+        
+        Returns
+        -------
+        True/False: Boolean
+            A positive or negative boolean value indicating that an error was/wasn't (respectively) encountered.
+        """
+        
         # Get the polygon coordinates data from the API request
         geoshape, was_error = self.get_geoshape_info_from_api_request_for_areacode(area_code)
         
@@ -303,6 +502,27 @@ class Region_Analysis(Dataframe_preprocessing):
         
         
     def get_geoshape_info_from_api_request_for_areacode(self, area_code):
+        """
+        Function to make the API GET request, handle API response, process JSON, and parse
+        out and return the polygon coordinates.
+        
+        The API provides access to a geographical repository maintained by Opendatasoft about regions.
+        Available: https://public.opendatasoft.com/explore/dataset/georef-united-kingdom-region/information/
+        The dataset contains coordinate data that can be used to render polygons of the region.
+             
+        Parameters
+        ----------
+        area_code: string
+            The 'Area Code' for the region whose data has been collected.
+        
+        Returns
+        -------
+        shape_info: string
+            A string representation of a list of coordinates describing indexes in polygons
+        True/False: Boolean
+            A positive or negative boolean value indicating that an error was/wasn't (respectively) encountered.
+        """
+        
         # Create the API GET request for the specified region
         api_str = f'https://public.opendatasoft.com/api/records/1.0/search/?dataset=georef-united-kingdom-region&q=rgn_code={area_code}'
                 
@@ -331,6 +551,21 @@ class Region_Analysis(Dataframe_preprocessing):
     
     
     def recursive_check_for_polygon_coords(self, parent_lst):
+        """
+        Function to recursively traverse a list that contains sublists, in order to identify the polygon
+        coordinates.
+             
+        Parameters
+        ----------
+        parent_lst: list
+            The current 'top-level' list, to be searched for sublists and coordinates
+        
+        Returns
+        -------
+        temp_polygon_coords: list
+            A list of collected coordinates
+        """
+        
         # Initialise an empty list to hold polygon coordinates
         temp_polygon_coords = []
         
@@ -355,6 +590,21 @@ class Region_Analysis(Dataframe_preprocessing):
         
         
     def convert_geoshape_to_polygon_coordinates(self, shape_data):
+        """
+        Function to convert the string representation of a coordinates list into a list compatible with
+        shapely.
+             
+        Parameters
+        ----------
+        shape_data: string
+            The string representation of a list of coordinates
+        
+        Returns
+        -------
+        poly_coords: list
+            A list of coordinates that can be used with shapely to initialise polygons
+        """
+        
         # Convert the string representation of the coordinates list to a list data type
         coordinates_lst = ast.literal_eval(shape_data)
                
@@ -366,6 +616,20 @@ class Region_Analysis(Dataframe_preprocessing):
     
     
     def create_geodataframe_with_area_data(self, poly_coords):
+        """
+        Function to create and populate a geopandas dataframe for the region using the coordinates list
+             
+        Parameters
+        ----------
+        poly_coords: list
+            A list of coordinates that can be used with shapely to initialise polygons
+        
+        Returns
+        -------
+        newdata: geopandas dataframe
+            A dataframe containing polygon data, screening uptake data, and area codes
+        """
+        
         # Create a geopandas dataframe for the region using provided polygon coordinates
         newdata = gpd.GeoDataFrame()
         
@@ -399,6 +663,19 @@ class Region_Analysis(Dataframe_preprocessing):
             
     
     def get_all_regions(self):
+        """
+        Function to create a pandas dataframe containing only the nine regions in the dataset for a given year.
+             
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        filtered_df[filtered_df['Area Type'] == 'Region']: pandas dataframe
+            A dataframe containing only region data for a specified year.
+        """
+        
         # Filter the dataframe to only include entries of the specified 'Time period'
         filtered_df = self.init_df[self.init_df['Time period'] == self.year]
         # Filter the updated dataframe to only include regions, and return the dataframe

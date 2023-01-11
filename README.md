@@ -14,7 +14,7 @@ The package can be used to clean and pre-process NHS screening uptake datasets a
 2. To offer high-level visualisation of these datasets and allow user configuration
 
 # Organisation Overview and Feature Description
-![Feature Overview Map](images/feature_overview.png?raw=true "Feature Overview Map")
+![Feature Overview Map](visualisation_package/images/feature_overview.png?raw=true "Feature Overview Map")
 
 This python package contains three subfolders: 'vis_tools', 'data' and 'testing':
 * *vis_tools* contains files necessary to execute visualisations

@@ -407,7 +407,7 @@ class Region_Analysis(Dataframe_preprocessing):
     
 
 # Example of how to use the region analysis class    
-region_test = Region_Analysis(2016)
+#region_test = Region_Analysis(2016)
 
 
 class LondonMap():

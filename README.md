@@ -10,8 +10,9 @@ Screening uptake datasets can be used to help inform public health policy around
 The package can be used to clean and pre-process NHS screening uptake datasets and generate a variety of different visualisations and can be customised to display data in formats such as histograms, bar charts, lineplots and heatmaps, making it easy to compare different years and regions. This package can be used to display trends in screening uptake over time, and can be used to identify potential areas for improvement in screening uptake. 
 
 # Organisation Overview and Feature Description
-'![Feature Overview Map](https://imgur.com/a/XFTBS8Z)'
-This python package contains three subfolders: 'vis_tools', 'data' and 'testing'.
+'![Feature Overview Map](feature_overview.png?raw=true "Feature Overview Map")'
+
+This python package contains three subfolders: 'vis_tools', 'data' and 'testing':
 * *vis_tools* contains files necessary to execute visualisations
     * datasets.py : contains functions for loading and pre-processing NHS screening uptake datasets for cervical, breast and bowel cancer
     * baseline.py : contains classes and functions necessary for creating basic summary statistic graphs, such as histograms and line plots

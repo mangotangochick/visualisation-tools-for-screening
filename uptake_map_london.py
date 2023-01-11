@@ -4,6 +4,7 @@ import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+import plotly.express as px
 
 loc_auth = gpd.read_file(\
 'shape_files/statistical-gis-boundaries-london/London_Borough_Excluding_MHW.shp')
@@ -89,3 +90,4 @@ class LondonMap():
 
         plt.show()
         return None
+    

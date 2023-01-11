@@ -27,12 +27,11 @@ def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
     sex: bool
         If True, then includes sex information
     deprivation: bool
-        If True, then includes "Category type" and "Category columns", which
-        describe deprivation groups. 
+        If True, then only includes rows with deprivation deciles. 
     Returns
     -------
     df: pandas DataFrame
-        cleaned dataframe    
+        data frame with unnecessary data excluded 
     """
     # Fill NaNs
     df['Category Type'].fillna('NA', inplace=True)

@@ -90,10 +90,7 @@ class Analysis_Plot:
         self.ax.yaxis.label.set_size(fontsize)
     
     def legend(self, include_leg):
-        self.legend_visible = bool
-        
-    def update_legend(self):
-        if self.legend_visible:
+        if include_leg:
             self.ax.legend()
     
     def figure_size(self, figsize):
@@ -105,11 +102,10 @@ class Analysis_Plot:
         self.y_label(y_label)
         self.fontsize(fontsize)
         self.legend(include_leg)
-        self.update_legend()
         self.figure_size(figsize)
 
 # Histogram of any float values:
-def hist(df, col, title="Plot", x_label="X", y_label="Y", fontsize=12, include_leg=True, figsize=(8,5)):
+def hist(df, col, title="Plot", x_label="X", y_label="Y", fontsize=12, include_leg=False, figsize=(8,5)):
     plot_o = Analysis_Plot()
     plot_o.adjust_fig(title=title, x_label=x_label, y_label=y_label, fontsize=fontsize, include_leg=include_leg, figsize=figsize)
     _=plot_o.ax.hist(df[col])
@@ -135,8 +131,41 @@ def area_analysis(in_df, area_name, fontsize=12, include_leg=True, figsize=(8,5)
     plot.ax.plot(in_df['Value'], 'co-', label=area_name)
     plt.show()
 
+def linear_comp(df, area_list, title="Plot", fontsize=12, include_leg=True, figsize=(8,5)):
+    '''
+    Function takes a list of area names and provides a comparison linear graph
+    of how screening rates changed in the chosen areas.
+    Parameters:
+    ----------
+    df: pandas DataFrame
+        data set
+    area_list: lst of str
+        a list of area names
+    title: str
+        title of the graph
+    fontsize: int
+        size of the axes font
+    include_leg: bool
+        if true includes the legend in the graph
+    figsize: touple
+        size of the graph in inches
+    '''
+    plot_o = Analysis_Plot()
+    y_label = "Proportion Screened, %"
+    x_label="Years"
+    for i in area_list:
+        print(i)
+        df1 = df.loc[df['Area Name']==i]
+        plt.plot(df1['Time period'], df1['Value'], label=i)
+    plot_o.adjust_fig(title=title, x_label=x_label, y_label=y_label, fontsize=fontsize, include_leg=include_leg, figsize=figsize)
+    plt.show()
+
+
+
+
 hist(df, 'Value', figsize=(8,5))
 area_analysis(df, 'Exeter')
+linear_comp(df, ['Exeter', 'Mid Sussex', 'Horsham'])
 
 
 

@@ -43,6 +43,12 @@ def basic_data_cleaning(df, age=bool, sex=bool):
     return df
 
 
+
+
+
+
+
+
 class Rank_Based_Graph:
     def __init__(self, df):
         self.df = df
@@ -113,7 +119,9 @@ class Rank_Based_Graph:
 
     def animated_bars(self, area_type="Region", list_reg=[
                      'East of England region', 'London region', 
-                     'South East region'], sns_palette="Spectral"):
+                     'South East region'], sns_palette="Spectral",
+                     width=1000, height=600, showlegend=False,
+                     rank_text_size=16):
         '''
         Utilises other functions in class Rank_Based_Graph to clean dataframe,
         select colour palette and plot an animated bar chart, of chosen areas 
@@ -121,28 +129,35 @@ class Rank_Based_Graph:
         Parameters:
         ----------
         area_type: str
-            either "Region" or "LA", default "Region"
+            can be "Region", "UA", or "LA", default "Region"
         list_reg: lst
             list of region names to be compared over time
             list_areas() function can be used to see options
         sns_palette: str
             name of seaborn palette to be used
             https://seaborn.pydata.org/tutorial/color_palettes.html
+        width: int
+            width of the graph in pixels, default 1000
+        height: int
+            height of the graph in pixels, default 1000
+        showlegend: bool
+            if True, adds a legend of the areas, default False
+        rank_text_size: int
+
         '''
         df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
         dict_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
         fig = px.bar(df_cleaned, x='Area Name', y='Value',
-             color='Area Name', text='rank',
-             color_discrete_map= dict_color,
-             animation_frame='Time period',
-             animation_group='Area Name',
-             range_y=[50, 90],
-             labels={ 'Value': 'Proportion Screened, %'},
-            )
-        fig.update_layout(width=1000, height=600, showlegend=False,
+                    color='Area Name', text='rank',
+                    color_discrete_map= dict_color,
+                    animation_frame='Time period',
+                    animation_group='Area Name', range_y=[50, 90],
+                    labels={ 'Value': 'Proportion Screened, %'})
+        fig.update_layout(width=width, height=height, showlegend=showlegend,
                         xaxis = dict(tickmode = 'linear', dtick = 1))
-        fig.update_traces(textfont_size=16, textangle=0)
+        fig.update_traces(textfont_size=rank_text_size, textangle=0)
         fig.show()
+    
 
 df = basic_data_cleaning(cerv_data, False, False)
 new_graph=Rank_Based_Graph(df)

@@ -5,6 +5,9 @@ This module helps generate a variety of different visualisations for screening
 uptake, and can be customised to display data in formats such as heatmaps,
 interactive bar charts making it easy to compare different regions over time.
 
+Region_Analysis:
+    Creates an interactive choropleth map of country separated into regions to visualise screening uptake.
+
 London_Map:
     Plots and saves a London map displaying the screening uptake by boroughs.
 
@@ -891,3 +894,90 @@ class Rank_Based_Graph:
                         xaxis = dict(tickmode = 'linear', dtick = 1))
         fig.update_traces(textfont_size=rank_text_size, textangle=0)
         fig.show()
+
+
+
+class Analysis_Plot:
+    
+    def __init__(self, in_dimensions, title, x_label, y_label, show_legend):
+        self.dimensions = in_dimensions
+        self.fig = plt.figure(figsize=(self.dimensions[0], self.dimensions[1]), facecolor=(0.075, 0.075, 0.075))
+        self.ax = self.fig.add_subplot()
+        self.legend_visible = show_legend
+        
+        self.ax.set_title(title)
+        
+        self.ax.set_xlabel(x_label, fontsize=12)
+        self.ax.set_ylabel(y_label, fontsize=12)
+        self.ax.tick_params(axis='both', labelsize=12)
+        
+        self.ax.grid(linestyle='--')
+        
+        self.ax.set_facecolor((0.075, 0.075, 0.075))
+        
+        self.ax.legend().set_visible(show_legend)
+        
+        
+    def update_legend(self):
+        if self.legend_visible:
+            self.ax.legend()
+
+            
+# get statistics for country as a whole (class inherits from Dataframe_preprocessing)
+class Country_Analysis(Dataframe_preprocessing):
+    
+    def __init__(self):
+        super().__init__()
+        
+        self.clean_df = self.clean_data_for_country_analysis(self.processed_df)
+        
+        self.plot_value_across_years()
+        
+        highest_year = self.get_year_with_highest_val()
+        print(f'highest_year = {highest_year}')
+        
+        lowest_year = self.get_year_with_lowest_val()
+        print(f'lowest_year = {lowest_year}')
+        
+    def clean_data_for_country_analysis(self, in_df):
+        filtered_df = in_df[in_df['Area Type'] == 'Country']
+        filtered_df = filtered_df[filtered_df['Value note'].isnull()]
+        filtered_df = filtered_df[filtered_df['Category'].isnull()]
+        
+        filtered_df = filtered_df.drop(labels=['Area Name'], axis=1)
+        filtered_df = filtered_df.drop(labels=['Area Code'], axis=1)
+        filtered_df = filtered_df.drop(labels=['Area Type'], axis=1)
+        filtered_df = filtered_df.drop(labels=['Value note'], axis=1)
+        filtered_df = filtered_df.drop(labels=['Category'], axis=1)
+        filtered_df = filtered_df.drop(labels=['Category Type'], axis=1)
+        
+                        
+        filtered_df.rename(columns={'Time period':'year'}, inplace=True)
+        
+        # set index to year
+        filtered_df.set_index('year', inplace=True)
+        
+        return filtered_df
+    
+    def get_year_with_highest_val(self):
+        return self.clean_df['Value'].idxmax()
+    
+    def get_year_with_lowest_val(self):
+        return self.clean_df['Value'].idxmin()
+    
+    def plot_value_across_years(self):
+        plot_title = 'How \'Value\' for England has changed between 2010 and 2016\n'
+        x_label = 'Year'
+        y_label = 'Value'
+
+        plot = Analysis_Plot([8, 4], plot_title, x_label, y_label, False)
+        
+        plot.ax.plot(self.clean_df['Value'], 'co-', label='England')
+                
+        # as 'show_legend' set to False, won't show legend
+        plot.update_legend()
+        
+        plt.show()
+
+# Example of how to use Country_Analysis     
+#country_analysis = Country_Analysis()

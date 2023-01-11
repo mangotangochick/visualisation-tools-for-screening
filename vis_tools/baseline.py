@@ -54,7 +54,8 @@ class Analysis_Plot:
         title: str
             title of the graph
         fontsize: int
-            size of font for title'''
+            size of font for title
+        '''
         self.ax.set_title(title).set_fontsize(fontsize)
     def x_label(self, x_label):
         '''
@@ -83,7 +84,8 @@ class Analysis_Plot:
         Parameters:
         ----------
         fontsize:
-            size of the font for the axis labels'''
+            size of the font for the axis labels
+        '''
         self.ax.xaxis.label.set_size(fontsize)
         self.ax.yaxis.label.set_size(fontsize)
     
@@ -93,7 +95,8 @@ class Analysis_Plot:
         Parameters:
         ----------
         include_leg: bool
-            If True, includes the legend'''
+            If True, includes the legend
+        '''
         if include_leg:
             self.ax.legend()
     
@@ -135,7 +138,7 @@ class Analysis_Plot:
         self.figure_size(figsize)
 
 # Histogram of any float values:
-def hist(df, col, title="Plot", x_label="X", y_label="Y", fontsize=12,
+def histogram(df, col, title="Plot", x_label="X", y_label="Y", fontsize=12,
         include_leg=False, figsize=(8,5)):
     '''
     Plots an customised histogram.
@@ -162,7 +165,7 @@ def hist(df, col, title="Plot", x_label="X", y_label="Y", fontsize=12,
     plot_o.adjust_fig(title=title, x_label=x_label, y_label=y_label,
                      fontsize=fontsize, include_leg=include_leg,
                      figsize=figsize)
-    _=plot_o.ax.hist(df, col)
+    _=plot_o.ax.hist(df[col])
     plt.show()
 
 def clean_data_for_area_analysis(df, area_name):

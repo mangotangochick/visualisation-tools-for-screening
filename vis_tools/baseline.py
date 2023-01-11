@@ -66,10 +66,6 @@ def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
     df = df[keep_col]
     return df
 
-file_path = os.path.join(os.pardir, 'data', 'breast_cancer_data.csv')
-df = pd.read_csv(file_path)
-df = basic_data_cleaning(df)
-
 class Analysis_Plot:
     
     def __init__(self):
@@ -163,11 +159,10 @@ def linear_comp(df, area_list, title="Plot", fontsize=12, include_leg=True, figs
     plt.show()
 
 
-
-
+file_path = os.path.join(os.pardir, 'data', 'breast_cancer_data.csv')
+df = pd.read_csv(file_path)
+df = basic_data_cleaning(df)
 hist(df, 'Value', figsize=(8,5))
 area_analysis(df, 'Exeter')
 linear_comp(df, ['Exeter', 'Mid Sussex', 'Horsham'])
-
-
 

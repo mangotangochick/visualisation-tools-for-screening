@@ -9,7 +9,7 @@ from matplotlib.colors import LinearSegmentedColormap
 df = pd.read_pickle('data/cerv_data_clean.pkl')
 
 
-class UK_Map:
+class UKMap:
     '''
     Plots and saves a UK choropleth map displaying the screening uptake by local authority, excluding London.
     '''
@@ -34,7 +34,7 @@ class UK_Map:
         None
         '''
         loc_auth = gpd.read_file(\
-        'shape_files/Local_Authority_Districts_(December_2022)_Boundaries_UK_BFC/LAD_DEC_2022_UK_BFC.shp')
+        'data/shape_files/Local_Authority_Districts_(December_2022)_Boundaries_UK_BFC/LAD_DEC_2022_UK_BFC.shp')
 
         # Define Time-periods
         if self.time_period == 2010:
@@ -94,3 +94,7 @@ class UK_Map:
 
         plt.show()
         return None
+
+# Testing 
+uk_map = UKMap(df=df)
+uk_map.plot_uk_map()

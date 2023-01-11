@@ -6,9 +6,6 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import plotly.express as px
 
-loc_auth = gpd.read_file(\
-'shape_files/statistical-gis-boundaries-london/London_Borough_Excluding_MHW.shp')
-
 df = pd.read_pickle('data/cerv_data_clean.pkl')
 
 class LondonMap():
@@ -44,26 +41,26 @@ class LondonMap():
             None: A choropleth map of London Boroughs is plotted.
         """
         loc_auth = gpd.read_file(\
-        'shape_files/statistical-gis-boundaries-london/London_Borough_Excluding_MHW.shp')
+        'data/shape_files/statistical-gis-boundaries-london/London_Borough_Excluding_MHW.shp')
 
         # Define Time-periods
         if self.time_period == 2010:
-            df = df.loc[df['Time period'] == 2010]
+            self.df = self.df.loc[self.df['Time period'] == 2010]
         elif self.time_period == 2011:
-            df = df.loc[df['Time period'] == 2011]
+            self.df = self.df.loc[self.df['Time period'] == 2011]
         elif self.time_period == 2012:
-            df = df.loc[df['Time period'] == 2012]
+            self.df = self.df.loc[self.df['Time period'] == 2012]
         elif self.time_period == 2013:
-            df = df.loc[df['Time period'] == 2013]
+            self.df = self.df.loc[self.df['Time period'] == 2013]
         elif self.time_period == 2014:
-            df = df.loc[df['Time period'] == 2014]
+            self.df = self.df.loc[self.df['Time period'] == 2014]
         elif self.time_period == 2015:
-            df = df.loc[df['Time period'] == 2015]
+            self.df = self.df.loc[self.df['Time period'] == 2015]
         elif self.time_period == 2016:
-            df = df.loc[df['Time period'] == 2016]
+            self.df = self.df.loc[self.df['Time period'] == 2016]
         else:
-            mean_values = df.groupby('Area Name')['Value'].mean().to_dict()
-            df['Value'] = df['Area Name'].map(mean_values)
+            mean_values = self.df.groupby('Area Name')['Value'].mean().to_dict()
+            self.df['Value'] = self.df['Area Name'].map(mean_values)
 
         # Merge shapefile with dataset
         ldn_map = loc_auth.merge(df, left_on='GSS_CODE', right_on='Area Code')
@@ -106,3 +103,6 @@ class LondonMap():
         plt.show()
         return None
     
+# Testing 
+ldn_map = LondonMap(df=df)
+ldn_map.plot_london_map()

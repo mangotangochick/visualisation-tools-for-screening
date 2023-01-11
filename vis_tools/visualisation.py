@@ -85,9 +85,8 @@ class UKMap:
         Returns:
         None
         '''
-        file_path = os.path.join('visualisation-tools-for-screening', 'data', 'shape_files', 'London_Borough_Excluding_MHW.shp')
-
-        loc_auth = gpd.read_file(file_path)
+        loc_auth = gpd.read_file(\
+            'data/shape_files/LAD_DEC_2022_UK_BFC.shp')
 
         # Define Time-periods
         if self.time_period == 2010:
@@ -167,10 +166,8 @@ class LondonMap():
         self.val_labels = val_labels
         
     def plot_london_map(self):
-
-        file_path = os.path.join('visualisation-tools-for-screening', 'data', 'shape_files', 'LAD_DEC_2022_UK_BFC.shp')
-
-        loc_auth = gpd.read_file(file_path)
+        loc_auth = gpd.read_file(\
+        'data/shape_files/London_Borough_Excluding_MHW.shp')
 
         # Define Time-periods
         if self.time_period == 2010:

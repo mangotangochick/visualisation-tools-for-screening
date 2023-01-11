@@ -3,7 +3,7 @@
 
 # Package Purpose
 
-In the UK, there are three national screening programmes for cancer: bowel, breast and cervical.The purpose of screening is to detect early signs or increased risk of cancer, and to tailor healthcare accordingly. The aim is more successful treatment or in some instances, prevention of cancer, and therefore better patient outcomes. One clear example of this is in the breast cancer screening programme that was introduced in 1988, which led to significant decreases in mortality from breast cancer over the next 10 years (Blanks, 2000).
+In the UK, there are three national screening programmes for cancer: bowel, breast and cervical. The purpose of screening is to detect early signs or increased risk of cancer, and to tailor healthcare accordingly. The aim is more successful treatment or in some instances, prevention of cancer, and therefore better patient outcomes. One clear example of this is in the breast cancer screening programme that was introduced in 1988, which led to significant decreases in mortality from breast cancer over the next 10 years (Blanks, 2000).
 
 Screening uptake datasets can be used to help inform public health policy around screening services, and can provide valuable insights into the effectiveness of current screening programmes. The python package accompanying this user guide offers visualisation tools to help analyse screening uptake datasets, allowing users to quickly and easily create visualisations of relevant data that can be used to inform policy and decision making, especially with application to the National Health Service (NHS) screening programmes for bowel, breast and cervical cancer. 
 

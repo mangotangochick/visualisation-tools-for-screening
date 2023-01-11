@@ -25,7 +25,6 @@ import plotly.express as px
 import os
 #from vis_tools import datasets as ds
 
-
 def basic_data_cleaning(df, age=bool, sex=bool):
 
     """
@@ -86,8 +85,9 @@ class UKMap:
         Returns:
         None
         '''
-        loc_auth = gpd.read_file(\
-            '~/visualisation-tools-for-screening/data/shape_files/London_Borough_Excluding_MHW.shp')
+        file_path = os.path.join('visualisation-tools-for-screening', 'data', 'shape_files', 'London_Borough_Excluding_MHW.shp')
+
+        loc_auth = gpd.read_file(file_path)
 
         # Define Time-periods
         if self.time_period == 2010:
@@ -167,8 +167,10 @@ class LondonMap():
         self.val_labels = val_labels
         
     def plot_london_map(self):
-        loc_auth = gpd.read_file(\
-        '~/visualisation-tools-for-screening/data/shape_files/London_Borough_Excluding_MHW.shp')
+
+        file_path = os.path.join('visualisation-tools-for-screening', 'data', 'shape_files', 'LAD_DEC_2022_UK_BFC.shp')
+
+        loc_auth = gpd.read_file(file_path)
 
         # Define Time-periods
         if self.time_period == 2010:

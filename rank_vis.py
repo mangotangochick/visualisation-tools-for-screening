@@ -43,12 +43,6 @@ def basic_data_cleaning(df, age=bool, sex=bool):
     return df
 
 
-
-
-
-
-
-
 class Rank_Based_Graph:
     def __init__(self, df):
         self.df = df
@@ -70,6 +64,18 @@ class Rank_Based_Graph:
 
 
     def clean_rank(self, list_reg=['East of England region', 'London region', 'South East region'], area_type="Region"):
+        """
+        Returns a df_year dataframe containing the rank of each region in the list_reg relative to each other for each year.
+
+        Parameters:
+        list_reg: list
+            list of regions (default: ['East of England region', 'London region', 'South East region'])
+        area_type: str
+            the type of area to compare (default: "Region")
+
+        Returns:
+        df_year: a dataframe containing the rank of each region in the list_reg relative to each other for each year 
+        """
         # Selects areas we want to compare
         self.df = self.df[self.df["Area Type"]==area_type]
         # Selects which regions to compare

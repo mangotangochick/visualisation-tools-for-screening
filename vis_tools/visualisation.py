@@ -139,9 +139,9 @@ class UKMap:
         plt.figure(dpi=300)
 
         if type(self.time_period) == int:
-            plt.savefig(f'UK_Screening_Heatmap_{self.time_period}')
+            plt.savefig(f'UK_Screening_Heatmap_{self.time_period}.png')
         else:
-            plt.savefig('UK_Screening_Heatmap_Means')
+            plt.savefig('UK_Screening_Heatmap_Means.png')
 
         plt.show()
         return None
@@ -220,9 +220,9 @@ class LondonMap():
         plt.figure(dpi=300)
 
         if type(self.time_period) == int:
-            plt.savefig(f'London_Screening_Heatmap_{self.time_period}')
+            plt.savefig(f'London_Screening_Heatmap_{self.time_period}.png')
         else:
-            plt.savefig('London_Screening_Heatmap_Means')
+            plt.savefig('London_Screening_Heatmap_Means.png')
 
         plt.show()
         return None

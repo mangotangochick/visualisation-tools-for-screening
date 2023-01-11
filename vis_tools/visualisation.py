@@ -1,27 +1,34 @@
 '''
 Tools for advanced visualisations of screening data.
 
-Explanation:
+This module helps generate a variety of different visualisations for screening
+uptake, and can be customised to display data in formats such as heatmaps,
+interactive bar charts making it easy to compare different regions over time.
 
 UK_Map:
-    
+    Plots and saves a UK map displaying the screening uptake by local
+    authority, excluding London.
 
 London_Map:
-    
+    Plots and saves a London map displaying the screening uptake by boroughs.
 
-RankGraph: animated bar chart
+animated_bars(): part of Rank_Graph class
+    Creates an animated, interactive bar chart of the ranking of a chosen list
+    of areas over time.
 '''
 import pandas as pd
 import geopandas as gpd
+import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+import plotly.express as px
 import os
 #from vis_tools import datasets as ds
 
 
 # Importing the 
 loc_auth = gpd.read_file(\
-    '~/data/London_Borough_Excluding_MHW.shp')
+    '~/visualisation-tools-for-screening/data/shape_files/Local_Authority_Districts_(December_2022)_Boundaries_UK_BFC/LAD_DEC_2022_UK_BFC.shp')
 
 
 
@@ -89,7 +96,7 @@ class UK_Map:
         None
         '''
         loc_auth = gpd.read_file(\
-            '~/visualisation-tools-for-screening/data/LAD_DEC_2022_UK_BFC.shp')
+            '~/visualisation-tools-for-screening/data/shape_files/statistical-gis-boundaries-london/London_Borough_Excluding_MHW.shp')
 
         # Define Time-periods
         if self.time_period == 2010:
@@ -242,7 +249,7 @@ class Rank_Based_Graph:
         Parameters:
         ----------
         area_type: str
-            either a "Reagion" or "LA"
+            either a "Reagion", "UA, or "LA", default = "Region"
         '''
         # Slicing the dataframe:
         self.df = self.df[self.df["Area Type"]==area_type]
@@ -251,7 +258,23 @@ class Rank_Based_Graph:
         print(ar_lst)
 
 
-    def clean_rank(self, list_reg=['East of England region', 'London region', 'South East region'], area_type="Region"):
+    def clean_rank(self, list_reg=['East of England region', 'London region',
+                   'South East region'], area_type="Region"):
+        '''
+        Returns a df_year dataframe containing the rank of each region in the
+        list_reg relative to each other for each year.
+
+        Parameters:
+        list_reg: list
+            list of regions (default: ['East of England region',
+            'London region', 'South East region'])
+        area_type: str
+            the type of area to compare (default: "Region")
+
+        Returns:
+        df_year: a dataframe containing the rank of each region in the list_reg
+        relative to each other for each year 
+        '''
         # Selects areas we want to compare
         self.df = self.df[self.df["Area Type"]==area_type]
         # Selects which regions to compare
@@ -306,7 +329,7 @@ class Rank_Based_Graph:
                      rank_text_size=16):
         '''
         Utilises other functions in class Rank_Based_Graph to clean dataframe,
-        select colour palette and plot an animated bar chart, of chosen areas 
+        select colour palette and plot an animated bar chart, of chosen areas' 
         rank change over time. 
         Parameters:
         ----------

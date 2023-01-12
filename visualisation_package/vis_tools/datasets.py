@@ -16,6 +16,9 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import data
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
 
 package_dir = os.path.dirname(data.__file__)
 print(package_dir)
@@ -89,7 +92,7 @@ def load_cerv(age=True, sex=True, deprivation=False):
                                      deprivation=deprivation)
     return cerv_data
 
-def load_bowel(age=True, sex=True, deprivation=True):
+def load_bowel(age=True, sex=True, deprivation=False):
     '''
     Loads data from local file on bowel cancer screening. 
     The file includes data on the percentage of people in the resident
@@ -116,7 +119,7 @@ def load_bowel(age=True, sex=True, deprivation=True):
                                      deprivation=deprivation)
     return bowel_data
 
-def load_breast(age=True, sex=True, deprivation=True):
+def load_breast(age=True, sex=True, deprivation=False):
     '''
     Loads data from local file on breast cancer screening. 
     The file includes data on the percentage of people in the resident
@@ -143,7 +146,7 @@ def load_breast(age=True, sex=True, deprivation=True):
                                      deprivation=deprivation)
     return breast_data
 
-def load_custom(filename=str, age=True, sex=True, deprivation=True):
+def load_custom(filename=str, age=True, sex=True, deprivation=False):
     '''
     Loads data from local custom file
 
@@ -178,3 +181,68 @@ def load_custom(filename=str, age=True, sex=True, deprivation=True):
     custom_data = basic_data_cleaning(custom_data, age=age, sex=sex, 
                                      deprivation=deprivation)
     return custom_data
+
+class BasicDataExploration:
+
+    def __init__(self, df, dep_deciles = bool):
+        self.df = df
+        self.dep_deciles = dep_deciles
+
+    def explore(self):
+        print(' ')
+        print(f'The datatypes of the columns in the DataFrame are:\
+            \n{self.df.dtypes}')
+        print(' ')
+        print(f'The number of null values in each column are:\
+            \n{self.df.isnull().sum()}')
+
+        # Check for any duplicated rows
+        print(f'The number of duplicated rows are:\
+             {self.df.duplicated().sum()}')
+
+        # Show Area Type Frequency
+        print('Below is a barplot of Area Type frequencies:')
+        self.df['Area Type'].value_counts().plot.bar(figsize=(10,5))
+        plt.show()
+
+        # Generate histogram to identify outliers for the 'Value' Column
+        print('Below is a histogram of the float columns:') 
+        sns.histplot(self.df['Value'])
+        plt.ylabel('Percentage Uptake (%)')
+        plt.show()
+
+        # Count by area name
+        print('Below is a barplot overview of the area names and frequencies:') 
+        area_freq = self.df.groupby(['Area Name'])['Area Name'].count()
+        area_freq.plot(kind='bar', figsize =(100,5))
+        plt.legend(prop={'size': 4})
+        plt.xticks(rotation=90)
+        plt.figure(dpi=300)
+        plt.show()
+
+
+        if self.dep_deciles == True:
+            county_dd = self.df[self.df['Category Type'].\
+                isin(["County & UA deprivation deciles in England (IMD2010)", \
+                    "County & UA deprivation deciles in England (IMD2015)"])]
+            district_dd = self.df[self.df['Category Type'].\
+                isin(["District & UA deprivation deciles in England (IMD2010)", \
+                    "District & UA deprivation deciles in England (IMD2015)"])]
+
+            print(len(county_dd))
+            print(len(district_dd))
+
+            county_cat_yr_freq = county_dd.groupby(['Category', 'Time period'])['Time period'].count()
+            county_cat_yr_freq = county_cat_yr_freq.unstack(level=0)
+            county_cat_yr_freq.plot(kind='bar', figsize =(12,5), legend = 'right')
+            plt.legend(prop={'size': 4})
+            plt.figure(dpi=300)
+            plt.show()
+
+            district_cat_yr_freq = district_dd.groupby(['Category', 'Time period'])['Time period'].count()
+            district_cat_yr_freq = district_cat_yr_freq.unstack(level=0)
+            district_cat_yr_freq.plot(kind='bar', figsize =(12,5), legend = 'right')
+            plt.legend(prop={'size': 4})
+            plt.figure(dpi=300)
+            plt.show()
+

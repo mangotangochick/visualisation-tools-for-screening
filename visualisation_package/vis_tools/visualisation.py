@@ -816,9 +816,8 @@ class Rank_Based_Graph:
         # Changing the data type into string:
         df_select = df_select.astype({'Area Name': str})
         df_select.reset_index(inplace=True)
-        df_year = df_select
-        if "index" in df_year.columns:
-            df_year = df_year.drop(columns=["index"])
+        if "index" in df_select.columns:
+            df_year = df_select.drop(columns=["index"])
     
         # Splitting data into dfs by the year and ranking each based on Value.
         keep = []
@@ -881,7 +880,6 @@ class Rank_Based_Graph:
         showlegend: bool
             if True, adds a legend of the areas, default False
         rank_text_size: int
-
         '''
         df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
         area_color = self.color_pal(df_cleaned, sns_palette=sns_palette)

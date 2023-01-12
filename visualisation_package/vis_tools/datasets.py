@@ -183,12 +183,51 @@ def load_custom(filename=str, age=True, sex=True, deprivation=False):
     return custom_data
 
 class BasicDataExploration:
+    
+    """
+    A class for basic data exploration.
+    
+    This class provides basic data exploration for a given DataFrame.
+    It provides insights on data types, 
+    null values, duplicated rows, area type frequencies,
+    float column histograms, area name frequencies, 
+    value grouped by area type 
+    boxplots and value grouped by LA, UA and Region boxplots.
+
+    It also provides a breakdown of county and district deprivation deciles
+    when dep_deciles is set to True.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        A dataframe
+    dep_deciles : bool, optional
+        Boolean to indicate whether or not to generate 
+        plots relating to deprivation deciles (default is False).
+
+    Methods
+    -------
+    explore()
+        Generates basic data exploration plots.
+    """
 
     def __init__(self, df, dep_deciles = bool):
         self.df = df
         self.dep_deciles = dep_deciles
 
     def explore(self):
+        """
+        Explore and visualize the data using matplotlib plots
+
+        Args:
+            self (obj): Instance of the BasicDataExploration class
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         print(' ')
         print(f'The datatypes of the columns in the DataFrame are:\
             \n{self.df.dtypes}')
@@ -226,9 +265,12 @@ class BasicDataExploration:
         plt.xticks(rotation=75)
         plt.show()
         
-        # Add multiple boxplots of the ['Value'] column in the dataframe, grouped by 'Area Type' LA, UA and Region
-        print('Below are multiple boxplots of the Value column in the dataframe, grouped by Area Type LA, UA and Region:')
-        sns.boxplot(x='Area Type', y='Value', data=self.df[self.df['Area Type'].isin(['LA','UA','Region'])])
+        # Add multiple boxplots of the ['Value'] 
+        # column in the dataframe, grouped by 'Area Type' LA, UA and Region
+        print('Below are multiple boxplots of the Value column \
+        in the dataframe, grouped by Area Type LA, UA and Region:')
+        sns.boxplot(x='Area Type', y='Value', \
+                    data=self.df[self.df['Area Type'].isin(['LA','UA','Region'])])
         plt.xticks(rotation=75)
         plt.show()
 
@@ -243,14 +285,16 @@ class BasicDataExploration:
             print(len(county_dd))
             print(len(district_dd))
 
-            county_cat_yr_freq = county_dd.groupby(['Category', 'Time period'])['Time period'].count()
+            county_cat_yr_freq = county_dd.groupby(['Category', 'Time period'])\
+            ['Time period'].count()
             county_cat_yr_freq = county_cat_yr_freq.unstack(level=0)
             county_cat_yr_freq.plot(kind='bar', figsize =(12,5), legend = 'right')
             plt.legend(prop={'size': 4})
             plt.figure(dpi=300)
             plt.show()
 
-            district_cat_yr_freq = district_dd.groupby(['Category', 'Time period'])['Time period'].count()
+            district_cat_yr_freq = district_dd.groupby(['Category', 'Time period'])\
+            ['Time period'].count()
             district_cat_yr_freq = district_cat_yr_freq.unstack(level=0)
             district_cat_yr_freq.plot(kind='bar', figsize =(12,5), legend = 'right')
             plt.legend(prop={'size': 4})

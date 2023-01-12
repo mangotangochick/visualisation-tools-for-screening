@@ -892,7 +892,7 @@ class Rank_Based_Graph:
                     animation_group='Area Name', range_y=[50, 90],
                     labels={ 'Value': 'Proportion Screened, %'})
         fig.update_layout(width=width, height=height, showlegend=showlegend,
-                        xaxis = dict(tickmode = 'linear', dtick = 1))
+                          xaxis = dict(tickmode = 'linear', dtick = 1))
         fig.update_traces(textfont_size=rank_text_size, textangle=0)
         fig.show()
 
@@ -917,16 +917,14 @@ class Rank_Based_Graph:
                         animation_frame='Time period',
                         animation_group='Area Name',
                         range_x=[-2,len(years)],
-                        range_y=[0.5,6.5]
-                        )
+                        range_y=[0.5,6.5])
         fig.update_xaxes(title='', visible=False)
         fig.update_yaxes(autorange='reversed', title='Rank',
                         visible=True, showticklabels=True)
         fig.update_layout(xaxis=dict(showgrid=False),
-                        yaxis=dict(showgrid=True))
+                         yaxis=dict(showgrid=True))
         fig.update_traces(textposition='middle left')
         fig.show()
-
 
 
 class Analysis_Plot:

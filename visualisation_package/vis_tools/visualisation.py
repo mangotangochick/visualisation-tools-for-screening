@@ -2,13 +2,13 @@
 Tools for advanced visualisations of screening data.
 
 This module helps generate a variety of different visualisations for screening
-uptake, and can be customised to display data in formats such as heatmaps,
+uptake, and can be customised to display data in formats such as choropleth maps,
 interactive bar charts making it easy to compare different regions over time.
 
 Region_Analysis:
     Creates an interactive choropleth map of country separated into regions to visualise screening uptake.
 
-London_Map:
+LondonMap:
     Plots and saves a London map displaying the screening uptake by boroughs.
 
 animated_bars(): part of Rank_Graph class
@@ -741,7 +741,7 @@ class LondonMap():
         cmap = LinearSegmentedColormap.from_list('mycmap', ['#FFFFFF', '#0F2B7F', '#0078B4'])
 
         # Plot map
-        fig = ldn_map.plot(column='Value', cmap=cmap, legend=True, figsize=(50, 30))
+        ldn_map.plot(column='Value', cmap=cmap, legend=True, figsize=(50, 30))
 
         # Add local authority labels
         if type(self.time_period) == int:
@@ -759,15 +759,9 @@ class LondonMap():
                         if self.val_labels == True:
                             plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 500),
                                     horizontalalignment='right', fontsize=15)
-
-        plt.figure(dpi=300)
-
-        if type(self.time_period) == int:
-            plt.savefig(f'London_Screening_Heatmap_{self.time_period}.png')
-        else:
-            plt.savefig('London_Screening_Heatmap_Means.png')
-
-        plt.show()
+        plt.show()    
+        plt.close()
+            
         return None
 
 
@@ -977,7 +971,11 @@ class Country_Analysis(Dataframe_preprocessing):
                 
         # as 'show_legend' set to False, won't show legend
         plot.update_legend()
-        
+
+        # set plot text colour to white
+        plot.ax.set_title(plot_title, color='white')
+        plot.ax.xaxis.label.set_color('white')
+        plot.ax.yaxis.label.set_color('white')
         plt.show()
 
 # Example of how to use Country_Analysis     

@@ -219,7 +219,18 @@ class BasicDataExploration:
         plt.xticks(rotation=90)
         plt.figure(dpi=300)
         plt.show()
-
+        
+        # Add boxplots of the ['Value'] column in the dataframe, grouped by 'Area Type'
+        print('Below are boxplots of the Value column in the dataframe, grouped by Area Type:')
+        sns.boxplot(x='Area Type', y='Value', data=self.df)
+        plt.xticks(rotation=75)
+        plt.show()
+        
+        # Add multiple boxplots of the ['Value'] column in the dataframe, grouped by 'Area Type' LA, UA and Region
+        print('Below are multiple boxplots of the Value column in the dataframe, grouped by Area Type LA, UA and Region:')
+        sns.boxplot(x='Area Type', y='Value', data=self.df[self.df['Area Type'].isin(['LA','UA','Region'])])
+        plt.xticks(rotation=75)
+        plt.show()
 
         if self.dep_deciles == True:
             county_dd = self.df[self.df['Category Type'].\

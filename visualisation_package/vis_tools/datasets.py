@@ -11,8 +11,14 @@ load_cerv: loads data from cervical screening file from 2010 to 2016.
 load_bowel: loads data from bowel screening file from 2015 to 2016.
 load_breast: loads data from breast screening file from 2010 to 2016.
 '''
-import pandas as pd     
+import pandas as pd
 import os 
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import data
+
+package_dir = os.path.dirname(data.__file__)
+print(package_dir)
 
 def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
     """
@@ -77,7 +83,8 @@ def load_cerv(age=True, sex=True, deprivation=False):
     cerv_data: pandas DataFrame
         cleaned dataframe    
     '''  
-    cerv_data = pd.read_csv('data/cervical_cancer_data.csv')
+    filepath = os.path.join(package_dir, 'cervical_cancer_data.csv')
+    cerv_data = pd.read_csv(filepath)
     cerv_data = basic_data_cleaning(cerv_data, age=age, sex=sex, 
                                      deprivation=deprivation)
     return cerv_data
@@ -103,7 +110,8 @@ def load_bowel(age=True, sex=True, deprivation=True):
     bowel_data: pandas DataFrame
         cleaned dataframe    
     '''
-    bowel_data = pd.read_csv('data/bowel_cancer_data.csv')  
+    filepath = os.path.join(package_dir, 'bowel_cancer_data.csv')
+    bowel_data = pd.read_csv(filepath)
     bowel_data = basic_data_cleaning(bowel_data, age=age, sex=sex, 
                                      deprivation=deprivation)
     return bowel_data
@@ -129,12 +137,13 @@ def load_breast(age=True, sex=True, deprivation=True):
     breast_data: pandas DataFrame
         cleaned dataframe    
     '''
-    breast_data = pd.read_csv('data/breast_cancer_data.csv')
+    filepath = os.path.join(package_dir, 'breast_cancer_data.csv')
+    breast_data = pd.read_csv(filepath)
     breast_data = basic_data_cleaning(breast_data, age=age, sex=sex, 
                                      deprivation=deprivation)
     return breast_data
 
-def load_custom(filepath=str, age=True, sex=True, deprivation=True):
+def load_custom(filename=str, age=True, sex=True, deprivation=True):
     '''
     Loads data from local custom file
 
@@ -164,10 +173,8 @@ def load_custom(filepath=str, age=True, sex=True, deprivation=True):
     breast_data: pandas DataFrame
         cleaned dataframe    
     '''
+    filepath = os.path.join(package_dir, filename)
     custom_data = pd.read_csv(filepath)
     custom_data = basic_data_cleaning(custom_data, age=age, sex=sex, 
                                      deprivation=deprivation)
     return custom_data
-
-df = load_cerv(False, False, False)
-df.shape

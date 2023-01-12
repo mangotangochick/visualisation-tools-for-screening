@@ -904,7 +904,7 @@ class Rank_Based_Graph:
                         rank_text_size=16):
         df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
         area_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
-        years = list(set(df_cleaned['Time period']))
+        years = list(set(self.df['Time period']))
         years.sort()
 
         df_cleaned['Position'] = [years.index(i) for i in df_cleaned['Time period']]

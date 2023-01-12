@@ -877,7 +877,7 @@ class Rank_Based_Graph:
         width: int
             width of the graph in pixels, default 1000
         height: int
-            height of the graph in pixels, default 1000
+            height of the graph in pixels, default 600
         showlegend: bool
             if True, adds a legend of the areas, default False
         rank_text_size: int

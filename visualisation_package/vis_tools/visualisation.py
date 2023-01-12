@@ -71,7 +71,7 @@ def basic_data_cleaning(df, age=bool, sex=bool):
     return df
 
 
-class Dataframe_preprocessing:
+class DataframePreprocessing:
         
     """
     Class that includes methods for downloading and basic cleaning of an NHS screening uptake dataset,
@@ -141,7 +141,7 @@ class Dataframe_preprocessing:
         return temp_df
 
     
-class Region_Analysis(Dataframe_preprocessing):
+class Region_Analysis(DataframePpreprocessing):
     """
     Class to create a choropleth map of the country to show the percentage uptake of screening for each
     region in a speicified year. 
@@ -149,7 +149,7 @@ class Region_Analysis(Dataframe_preprocessing):
     This class handles making an API GET request to recieve shapefile polygon
     cooridnate data, transforming the data, and plotting it to visualise the region category data.
     
-    This class inherits from the 'Dataframe_preprocessing' class, and therefore shares all its methods.
+    This class inherits from the 'DataframePpreprocessing' class, and therefore shares all its methods.
     
          
     Parameters
@@ -918,8 +918,8 @@ class Analysis_Plot:
             self.ax.legend()
 
             
-# get statistics for country as a whole (class inherits from Dataframe_preprocessing)
-class Country_Analysis(Dataframe_preprocessing):
+# get statistics for country as a whole (class inherits from DataframePpreprocessing)
+class Country_Analysis(DataframePpreprocessing):
     
     def __init__(self):
         super().__init__()

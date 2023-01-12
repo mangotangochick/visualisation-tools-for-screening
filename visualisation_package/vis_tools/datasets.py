@@ -134,5 +134,40 @@ def load_breast(age=True, sex=True, deprivation=True):
                                      deprivation=deprivation)
     return breast_data
 
+def load_custom(filepath=str, age=True, sex=True, deprivation=True):
+    '''
+    Loads data from local custom file
+
+    If you are using your own dataset. Ensure its columns include:
+    * 'Area Code', eg. 'E12000001'
+    * 'Area Name', eg. 'Exeter'
+    * 'Area Type', eg. 'LA'
+    * 'Time period', eg. 2010
+    * 'Value', eg. '77.5379545'
+    * 'Age', eg. '25-64 yrs'
+    * 'Sex', eg. 'Female'
+
+    ----------
+    Parameters
+    ----------
+    filepath: str
+        The relative path for accessing the custom dataset
+    age: bool
+        If True, then includes age information
+    sex: bool
+        If True, then includes sex information
+    deprivation: bool
+        If True, then includes "Category type" and "Category columns", which
+        describe deprivation groups.
+    Returns
+    -------
+    breast_data: pandas DataFrame
+        cleaned dataframe    
+    '''
+    custom_data = pd.read_csv(filepath)
+    custom_data = basic_data_cleaning(custom_data, age=age, sex=sex, 
+                                     deprivation=deprivation)
+    return custom_data
+
 df = load_cerv(False, False, False)
 df.shape

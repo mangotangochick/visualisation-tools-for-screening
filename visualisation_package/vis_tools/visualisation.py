@@ -820,7 +820,7 @@ class Rank_Based_Graph:
         if "index" in df_year.columns:
             df_year = df_year.drop(columns=["index"])
     
-        # Splitting data into dfs by the year and ranking based on Value.
+        # Splitting data into dfs by the year and ranking each based on Value.
         keep = []
         years = list(set(df_year['Time period']))
         years
@@ -884,16 +884,47 @@ class Rank_Based_Graph:
 
         '''
         df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
-        dict_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
+        area_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
         fig = px.bar(df_cleaned, x='Area Name', y='Value',
                     color='Area Name', text='rank',
-                    color_discrete_map= dict_color,
+                    color_discrete_map= area_color,
                     animation_frame='Time period',
                     animation_group='Area Name', range_y=[50, 90],
                     labels={ 'Value': 'Proportion Screened, %'})
         fig.update_layout(width=width, height=height, showlegend=showlegend,
                         xaxis = dict(tickmode = 'linear', dtick = 1))
         fig.update_traces(textfont_size=rank_text_size, textangle=0)
+        fig.show()
+
+
+    def animated_scatter(self, area_type="Region", list_reg=[
+                        'East of England region', 'London region', 
+                        'South East region'], sns_palette="Spectral",
+                        width=1000, height=600, showlegend=False,
+                        rank_text_size=16):
+        df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
+        area_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
+        years = list(set(df_cleaned['Time period']))
+        years.sort()
+
+        df_cleaned['Position'] = [years.index(i) for i in df_cleaned['Time period']]
+        df_cleaned['Val_str'] = [str(round(i,2)) for i in df_cleaned['Value']]
+        df_cleaned['Val_text'] = [str(round(i,2))+' ppm' for i in df_cleaned['Value']]
+        fig = px.scatter(df_cleaned, x='Position', y='rank',
+                        size= 'Value',
+                        color='Area Name', text='Val_text',
+                        color_discrete_map= area_color,
+                        animation_frame='Time period',
+                        animation_group='Area Name',
+                        range_x=[-2,len(years)],
+                        range_y=[0.5,6.5]
+                        )
+        fig.update_xaxes(title='', visible=False)
+        fig.update_yaxes(autorange='reversed', title='Rank',
+                        visible=True, showticklabels=True)
+        fig.update_layout(xaxis=dict(showgrid=False),
+                        yaxis=dict(showgrid=True))
+        fig.update_traces(textposition='middle left')
         fig.show()
 
 

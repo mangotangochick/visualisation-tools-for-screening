@@ -22,6 +22,10 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import plotly.express as px
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import data
+package_dir = os.path.dirname(data.__file__)
 #from vis_tools import datasets as ds
 
 import requests
@@ -685,9 +689,6 @@ class Region_Analysis(Dataframe_preprocessing):
         return filtered_df[filtered_df['Area Type'] == 'Region']
     
 
-# Example of how to use the region analysis class    
-#region_test = Region_Analysis(2016)
-
 
 class LondonMap():
     """
@@ -708,8 +709,8 @@ class LondonMap():
         self.val_labels = val_labels
         
     def plot_london_map(self):
-        loc_auth = gpd.read_file(\
-        'data/shape_files/London_Borough_Excluding_MHW.shp')
+        filepath = os.path.join(package_dir, 'shape_files', 'London_Borough_Excluding_MHW.shp')
+        loc_auth = gpd.read_file(filepath)
 
         # Define Time-periods
         if self.time_period == 2010:

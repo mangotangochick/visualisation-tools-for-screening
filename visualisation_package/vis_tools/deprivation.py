@@ -68,4 +68,3 @@ class DeprivationPlots():
                     textcoords='offset points')
 
             plt.show()
-

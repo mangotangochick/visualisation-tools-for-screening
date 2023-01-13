@@ -54,6 +54,7 @@ def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
     if deprivation==True:
         df = df[df['Category'].str.contains('IMD2015')]
         keep_col.append('Category')
+        keep_col.append('Category Type')
         df = df[keep_col]
 
     # else:

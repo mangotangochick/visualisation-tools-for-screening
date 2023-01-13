@@ -812,9 +812,10 @@ class Rank_Based_Graph:
         return dict_color
     
    
-    def animated_bars(self, area_type="Region", list_reg=[
-                        'East of England region', 'London region', 
-                        'South East region'], sns_palette="Spectral",
+    def animated_bars(self, area_type="LA", list_reg=[
+                        'Tendring', 'Rossendale', 'Bromsgrove','Wyre', 
+                        'Dartford', 'East Staffordshire'], 
+                        sns_palette="Spectral",
                         width=800, height=600, showlegend=False,
                         rank_text_size=16, open=False):
         '''
@@ -872,9 +873,9 @@ class Rank_Based_Graph:
         pyo.iplot(fig)
 
 
-    def animated_scatter(self, area_type="Region", list_reg=[
-                            'East of England region', 'London region', 
-                            'South East region'], sns_palette="Spectral",
+    def animated_scatter(self, area_type="LA", list_reg=[
+                            'Tendring', 'Rossendale', 'Bromsgrove','Wyre', 
+                            'Dartford', 'East Staffordshire'], sns_palette="Spectral",
                             width=1000, height=600, showlegend=False,
                             rank_text_size=16):
         df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
@@ -903,11 +904,28 @@ class Rank_Based_Graph:
         fig.show()
 
 
-import datasets as ds
-df = ds.load_cerv()
-Rank_Based_Graph(df).animated_scatter()
-Rank_Based_Graph(df).animated_bars()
-Rank_Based_Graph(df).plot_full_animated_graph()
+def visualise_rank(self, area_type="Region", list_reg=[
+                    'East of England region', 'London region', 
+                    'South East region'], sns_palette="Spectral",
+                    width=1000, height=600, showlegend=False,
+                    rank_text_size=16):
+    import datasets as ds
+    df = ds.load_cerv()
+    Rank_Based_Graph(df).animated_scatter(self, area_type="Region", list_reg=[
+                    'East of England region', 'London region', 
+                    'South East region'], sns_palette="Spectral",
+                    width=1000, height=600, showlegend=False,
+                    rank_text_size=16)
+    Rank_Based_Graph(df).animated_bars(self, area_type="Region", list_reg=[
+                    'East of England region', 'London region', 
+                    'South East region'], sns_palette="Spectral",
+                    width=1000, height=600, showlegend=False,
+                    rank_text_size=16)
+    Rank_Based_Graph(df).plot_full_animated_graph(self, area_type="Region", list_reg=[
+                    'East of England region', 'London region', 
+                    'South East region'], sns_palette="Spectral",
+                    width=1000, height=600, showlegend=False,
+                    rank_text_size=16)
 
 
 class Analysis_Plot:

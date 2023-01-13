@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+visualisation_package/vis_tools/plots/animated_rank_from_list.html
+visualisation_package/vis_tools/plots/animated_rank_full.html

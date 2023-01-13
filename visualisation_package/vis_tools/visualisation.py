@@ -36,112 +36,6 @@ from fiona.crs import from_epsg
 import shapefile as shp # pyshp
 import pyproj
 
-def basic_data_cleaning(df, age=bool, sex=bool):
-
-    """
-    Function for basic data cleaning of an NHS screening uptake dataset.
-    
-    This function returns two cleaned datasets, one with no deprivation deciles and one with deprivation deciles
-
-    Parameters
-    ----------
-    df: pandas DataFrame
-        DataFrame containing the data to be explored.
-    age: bool
-        If True, then executes code that removes age information
-    sex: bool
-        If True, then executes code that removes sex information
-    
-    Returns
-    -------
-    df: pandas DataFrame
-        cleaned dataframe    
-    """
-
-    # Fill NaNs
-    df['Category Type'].fillna('NA', inplace=True)
-    keep_col = ['Area Code', 'Area Name', 'Area Type', 'Time period', 'Value']
-    if age==True:
-        keep_col.append('Age')
-
-    if sex==True:
-        keep_col.append('Sex')
-
-    # Remove Unnecessary Columns
-    df = df[keep_col]
-    return df
-
-
-class DataframePreprocessing:
-        
-    """
-    Class that includes methods for downloading and basic cleaning of an NHS screening uptake dataset,
-    to be inherited from by analysis classes. Allows for increased expandability of the code.
-    
-         
-    Parameters
-    ----------
-    None
-    
-    Returns
-    -------
-    None 
-    """
-    
-    def __init__(self):
-        # Create pandas dataframe from online dataset
-        self.init_df = self.initialise_df()
-        # Basic cleaning of dataset to remove redundant columns
-        self.processed_df = self.preprocess_data()
-        
-    def initialise_df(self):
-        """
-        Function to download the dataset and read it into a pandas dataframe.
-        
-             
-        Parameters
-        ----------
-        None
-        
-        Returns
-        -------
-        pd.read_csv(data_str): pandas dataframe
-            The pandas dataframe created with the screening data 
-        """
-        
-        
-        # URL for screening dataset
-        data_str = 'https://data.england.nhs.uk/dataset/dbf14bed-85bc-4aef-856c-38eb9d6de730/resource/e281a471-f546-44b9-99f1-12e80b27a638/download/220iicancerscreeningcoveragecervicalcancer.data.csv'
-
-        # Read the URL file into a dataframe and return it
-        return pd.read_csv(data_str)
-        
-    def preprocess_data(self):
-        """
-        Function to clean the pandas dataframe - removing redundant columns.
-        
-             
-        Parameters
-        ----------
-        None
-        
-        Returns
-        -------
-        temp_df: pandas dataframe
-            The updated dataframe
-        """
-        
-        # Get the original dataset
-        temp_df = self.init_df
-        # Remove the redundant columns from dataframe
-        temp_df = temp_df.drop(labels=['Sex'], axis=1)
-        temp_df = temp_df.drop(labels=['Age'], axis=1)
-        temp_df = temp_df.drop(labels=['Lower CI limit'], axis=1)
-        temp_df = temp_df.drop(labels=['Upper CI limit'], axis=1)
-        # Return the updated dataframe
-        return temp_df
-
-    
 class Region_Analysis(DataframePreprocessing):
     """
     Class to create a choropleth map of the country to show the percentage uptake of screening for each
@@ -848,7 +742,6 @@ class Rank_Based_Graph:
         dict_color = dict(zip(area_name, pal))
         return dict_color
     
-
    
     def animated_bars(self, area_type="Region", list_reg=[
                         'East of England region', 'London region', 
@@ -908,6 +801,7 @@ class Rank_Based_Graph:
         fig.update_traces(textfont_size=rank_text_size, textangle=0)
         pyo.plot(fig, filename='plots/animated_rank_full.html', auto_open=False)
         pyo.iplot(fig)
+
 
     def animated_scatter(self, area_type="Region", list_reg=[
                             'East of England region', 'London region', 

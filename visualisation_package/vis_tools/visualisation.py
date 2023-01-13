@@ -740,6 +740,9 @@ class Rank_Based_Graph:
         ----------
         area_type: str
             either a "Region", "UA, or "LA", default = "Region"
+        Return:
+        ar_lst: lst of str
+            list of areas in the chosen area type.
         '''
         # Slicing the dataframe:
         self.df = self.df[self.df["Area Type"]==area_type]
@@ -839,8 +842,6 @@ class Rank_Based_Graph:
         rank_text_size: int
 
         '''
-        if list_reg == []:
-            list_reg = self.list_areas(area_type)
         df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
         dict_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
         fig = px.bar(df_cleaned, x='Area Name', y='Value',
@@ -860,7 +861,7 @@ class Rank_Based_Graph:
                         width=800, height=600, showlegend=False,
                         rank_text_size=16):
         
-        region_df = self.df[self.df['Area Type'] == area_type]
+        region_df = self.df[self.df.loc['Area Type'] == area_type]
         dict_color = self.color_pal(region_df, sns_palette=sns_palette)
         fig = px.bar(region_df, x='Area Name', y='Value', animation_frame='Time period', animation_group='Area Name',
                      range_y=[region_df['Value'].min() - 10, region_df['Value'].max() + 10],
@@ -901,15 +902,15 @@ class Rank_Based_Graph:
         fig.update_yaxes(autorange='reversed', title='Rank',
                         visible=True, showticklabels=True)
         fig.update_layout(xaxis=dict(showgrid=False),
-                        yaxis=dict(showgrid=True), width=800, height=500)
+                        yaxis=dict(showgrid=True), width=width, height=height)
         fig.update_traces(textposition='middle left')
         fig.show()
 
 
-def visualise_rank(area_type="Region", list_reg=[
-                    'East of England region', 'London region', 
-                    'South East region'], sns_palette="Spectral",
-                    width=1000, height=600, showlegend=False,
+def visualise_rank(area_type="LA", list_reg=[
+                    'Tendring', 'Rossendale', 'Bromsgrove','Wyre', 
+                    'Dartford', 'East Staffordshire'], sns_palette="Spectral",
+                    width=800, height=600, showlegend=False,
                     rank_text_size=16):
     import datasets as ds
     df = ds.load_cerv()
@@ -921,8 +922,8 @@ def visualise_rank(area_type="Region", list_reg=[
                     list_reg=list_reg, sns_palette=sns_palette,
                     width=width, height=height, showlegend=showlegend,
                     rank_text_size=rank_text_size)
-    Rank_Based_Graph(df).plot_full_animated_graph(area_type=area_type, 
-                    list_reg=list_reg, sns_palette=sns_palette,
+    Rank_Based_Graph(df).plot_full_animated_graph(area_type="Region", 
+                    sns_palette=sns_palette,
                     width=width, height=height, showlegend=showlegend,
                     rank_text_size=rank_text_size)
     plt.show()

@@ -746,7 +746,7 @@ class Rank_Based_Graph:
     def animated_bars(self, area_type="Region", list_reg=[
                         'East of England region', 'London region', 
                         'South East region'], sns_palette="Spectral",
-                        width=1000, height=600, showlegend=False,
+                        width=800, height=600, showlegend=False,
                         rank_text_size=16, open=False):
         '''
         Utilises other functions in class Rank_Based_Graph to clean dataframe,
@@ -763,9 +763,9 @@ class Rank_Based_Graph:
             name of seaborn palette to be used
             https://seaborn.pydata.org/tutorial/color_palettes.html
         width: int
-            width of the graph in pixels, default 1000
+            width of the graph in pixels, default 800
         height: int
-            height of the graph in pixels, default 1000
+            height of the graph in pixels, default 600
         showlegend: bool
             if True, adds a legend of the areas, default False
         rank_text_size: int
@@ -787,14 +787,14 @@ class Rank_Based_Graph:
             
 
     def plot_full_animated_graph(self, area_type = 'Region', sns_palette="Spectral",
-                        width=1000, height=600, showlegend=False,
+                        width=800, height=600, showlegend=False,
                         rank_text_size=16):
         region_df = self.df[self.df['Area Type'] == area_type]
         fig = px.bar(region_df, x='Area Name', y='Value', animation_frame='Time period', animation_group='Area Name',
                      range_y=[region_df['Value'].min() - 10, region_df['Value'].max()],
                      labels={ 'Value': 'Proportion Screened, %'},
                      hover_name='Area Name',
-                     color='Area Name', 
+                     color='Area Name', range_y=[50, 90],
                      title='Region Ranking Change')
         fig.update_layout(width=width, height=height, showlegend=showlegend,
                 xaxis = dict(tickmode = 'linear', dtick = 1))

@@ -859,12 +859,13 @@ class Rank_Based_Graph:
     def plot_full_animated_graph(self, area_type = 'Region', sns_palette="Spectral",
                         width=800, height=600, showlegend=False,
                         rank_text_size=16):
+        dict_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
         region_df = self.df[self.df['Area Type'] == area_type]
         fig = px.bar(region_df, x='Area Name', y='Value', animation_frame='Time period', animation_group='Area Name',
                      range_y=[region_df['Value'].min() - 10, region_df['Value'].max() + 10],
                      labels={ 'Value': 'Proportion Screened, %'},
                      hover_name='Area Name',
-                     color='Area Name',
+                     color=dict_color,
                      title='Region Ranking Change')
         fig.update_layout(width=width, height=height, showlegend=showlegend,
                 xaxis = dict(tickmode = 'linear', dtick = 1))

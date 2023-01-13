@@ -11,7 +11,6 @@ load_cerv: loads data from cervical screening file from 2010 to 2016.
 load_bowel: loads data from bowel screening file from 2015 to 2016.
 load_breast: loads data from breast screening file from 2010 to 2016.
 '''
-import pandas as pd
 import os 
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -44,24 +43,27 @@ def basic_data_cleaning(df, age=True, sex=True, deprivation=False):
         data frame with unnecessary data excluded 
     """
     # Fill NaNs
-    df['Category Type'].fillna('NA', inplace=True)
+    df['Category'].fillna('NA', inplace=True)
     
     # Dropping "Cl_L3_..." values representing types of areas.
     df = df[df['Area Code'].str.contains('E')]
     
     # Columns we want to keep. 
-    keep_col = ['Area Code', 'Area Name', 'Area Type', 'Time period', 'Value']
+    keep_col = ['Area Code', 'Area Name', 'Area Type', 'Time period', 'Value', 'Sex', 'Age']
 
     if deprivation==True:
-        df = df[df['Category Type'].str.contains('deprivation deciles in England')]
-    else:
-        if age == True:
-            keep_col.append('Age')
-        if sex == True:
-            keep_col.append('Sex')
+        df = df[df['Category'].str.contains('IMD2015')]
+        keep_col.append('Category')
+        df = df[keep_col]
 
-    # Remove Unnecessary Columns
-    df = df[keep_col]
+    # else:
+    #     if age == True:
+    #         keep_col.append('Age')
+    #         df = df[keep_col]
+    #     if sex == True:
+    #         keep_col.append('Sex')
+    #         df = df[keep_col]
+    
     return df
 
 

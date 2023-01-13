@@ -890,6 +890,7 @@ class Rank_Based_Graph:
             pyo.plot(fig, filename='plots/animated_rank_from_list.html', auto_open=False)
             pyo.iplot(fig)
             
+
     def plot_full_animated_graph(self, area_type = 'Region', sns_palette="Spectral",
                         width=1000, height=600, showlegend=False,
                         rank_text_size=16):
@@ -905,6 +906,37 @@ class Rank_Based_Graph:
         fig.update_traces(textfont_size=rank_text_size, textangle=0)
         pyo.plot(fig, filename='plots/animated_rank_full.html', auto_open=False)
         pyo.iplot(fig)
+
+    def animated_scatter(self, area_type="Region", list_reg=[
+                            'East of England region', 'London region', 
+                            'South East region'], sns_palette="Spectral",
+                            width=1000, height=600, showlegend=False,
+                            rank_text_size=16):
+            df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
+            area_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
+            years = list(set(self.df['Time period']))
+            years.sort()
+
+            df_cleaned['Position'] = [years.index(i) for i in df_cleaned['Time period']]
+            df_cleaned['Val_str'] = [str(round(i,2)) for i in df_cleaned['Value']]
+            df_cleaned['Val_text'] = [str(round(i,2))+' ppm' for i in df_cleaned['Value']]
+            fig = px.scatter(df_cleaned, x='Position', y='rank',
+                            size= 'Value',
+                            color='Area Name', text='Val_text',
+                            color_discrete_map= area_color,
+                            animation_frame='Time period',
+                            animation_group='Area Name',
+                            range_x=[-2,len(years)],
+                            range_y=[0.5,6.5]
+                            )
+            fig.update_xaxes(title='', visible=False)
+            fig.update_yaxes(autorange='reversed', title='Rank',
+                            visible=True, showticklabels=True)
+            fig.update_layout(xaxis=dict(showgrid=False),
+                            yaxis=dict(showgrid=True))
+            fig.update_traces(textposition='middle left')
+            fig.show()
+
 
 
 class Analysis_Plot:

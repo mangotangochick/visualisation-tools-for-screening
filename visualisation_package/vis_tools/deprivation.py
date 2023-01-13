@@ -38,7 +38,7 @@ class DeprivationPlots():
         """
         df = self.df
         df_grouped = df.loc[df['Time period'] == year].groupby('Time period')
-        
+
         for name, group in df_grouped:
             df_most = group[group['Category'].str.contains('Most|most|more')]
             df_least = group[group['Category'].str.contains('Least|least|less')]
@@ -67,4 +67,19 @@ class DeprivationPlots():
                     ha='center', va='center', xytext=(0, 10),
                     textcoords='offset points')
 
+            for ax in [ax[0], ax[1]]:
+                for i, rect in enumerate(ax.patches):
+                    if df_most['Category Type'].str.contains('County').iloc[i]:
+                        rect.set_facecolor('#7B8788')
+                    elif df_most['Category Type'].str.contains('District').iloc[i]:
+                        rect.set_facecolor('#F5A9E1')
+                    elif df_least['Category Type'].str.contains('County').iloc[i]:
+                        rect.set_facecolor('#7B8788')
+                    elif df_least['Category Type'].str.contains('District').iloc[i]:
+                        rect.set_facecolor('#F5A9E1')
+
+            ax.legend()
             plt.show()
+
+
+        plt.show()

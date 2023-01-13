@@ -23,6 +23,8 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import plotly.express as px
 import plotly.offline as pyo
+import plotly.io as pio
+pio.renderers.default = "vscode"
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import data
@@ -852,43 +854,43 @@ class Rank_Based_Graph:
                         'East of England region', 'London region', 
                         'South East region'], sns_palette="Spectral",
                         width=1000, height=600, showlegend=False,
-                        rank_text_size=16):
-            '''
-            Utilises other functions in class Rank_Based_Graph to clean dataframe,
-            select colour palette and plot an animated bar chart, of chosen areas' 
-            rank change over time. 
-            Parameters:
-            ----------
-            area_type: str
-                can be "Region", "UA", or "LA", default "Region"
-            list_reg: lst
-                list of region names to be compared over time
-                list_areas() function can be used to see options
-            sns_palette: str
-                name of seaborn palette to be used
-                https://seaborn.pydata.org/tutorial/color_palettes.html
-            width: int
-                width of the graph in pixels, default 1000
-            height: int
-                height of the graph in pixels, default 1000
-            showlegend: bool
-                if True, adds a legend of the areas, default False
-            rank_text_size: int
+                        rank_text_size=16, open=False):
+        '''
+        Utilises other functions in class Rank_Based_Graph to clean dataframe,
+        select colour palette and plot an animated bar chart, of chosen areas' 
+        rank change over time. 
+        Parameters:
+        ----------
+        area_type: str
+            can be "Region", "UA", or "LA", default "Region"
+        list_reg: lst
+            list of region names to be compared over time
+            list_areas() function can be used to see options
+        sns_palette: str
+            name of seaborn palette to be used
+            https://seaborn.pydata.org/tutorial/color_palettes.html
+        width: int
+            width of the graph in pixels, default 1000
+        height: int
+            height of the graph in pixels, default 1000
+        showlegend: bool
+            if True, adds a legend of the areas, default False
+        rank_text_size: int
 
-            '''
-            df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
-            dict_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
-            fig = px.bar(df_cleaned, x='Area Name', y='Value',
-                        color='Area Name', text='rank',
-                        color_discrete_map= dict_color,
-                        animation_frame='Time period',
-                        animation_group='Area Name', range_y=[50, 90],
-                        labels={ 'Value': 'Proportion Screened, %'})
-            fig.update_layout(width=width, height=height, showlegend=showlegend,
-                            xaxis = dict(tickmode = 'linear', dtick = 1))
-            fig.update_traces(textfont_size=rank_text_size, textangle=0)
-            pyo.plot(fig, filename='plots/animated_rank_from_list.html', auto_open=False)
-            pyo.iplot(fig)
+        '''
+        df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
+        dict_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
+        fig = px.bar(df_cleaned, x='Area Name', y='Value',
+                    color='Area Name', text='rank',
+                    color_discrete_map= dict_color,
+                    animation_frame='Time period',
+                    animation_group='Area Name', range_y=[50, 90],
+                    labels={ 'Value': 'Proportion Screened, %'})
+        fig.update_layout(width=width, height=height, showlegend=showlegend,
+                        xaxis = dict(tickmode = 'linear', dtick = 1))
+        fig.update_traces(textfont_size=rank_text_size, textangle=0)
+        pyo.plot(fig, filename='plots/animated_rank_from_list.html', auto_open=open)
+        pyo.iplot(fig)
             
 
     def plot_full_animated_graph(self, area_type = 'Region', sns_palette="Spectral",
@@ -912,31 +914,37 @@ class Rank_Based_Graph:
                             'South East region'], sns_palette="Spectral",
                             width=1000, height=600, showlegend=False,
                             rank_text_size=16):
-            df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
-            area_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
-            years = list(set(self.df['Time period']))
-            years.sort()
+        df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
+        area_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
+        years = list(set(self.df['Time period']))
+        years.sort()
 
-            df_cleaned['Position'] = [years.index(i) for i in df_cleaned['Time period']]
-            df_cleaned['Val_str'] = [str(round(i,2)) for i in df_cleaned['Value']]
-            df_cleaned['Val_text'] = [str(round(i,2))+' ppm' for i in df_cleaned['Value']]
-            fig = px.scatter(df_cleaned, x='Position', y='rank',
-                            size= 'Value',
-                            color='Area Name', text='Val_text',
-                            color_discrete_map= area_color,
-                            animation_frame='Time period',
-                            animation_group='Area Name',
-                            range_x=[-2,len(years)],
-                            range_y=[0.5,6.5]
-                            )
-            fig.update_xaxes(title='', visible=False)
-            fig.update_yaxes(autorange='reversed', title='Rank',
-                            visible=True, showticklabels=True)
-            fig.update_layout(xaxis=dict(showgrid=False),
-                            yaxis=dict(showgrid=True))
-            fig.update_traces(textposition='middle left')
-            fig.show()
+        df_cleaned['Position'] = [years.index(i) for i in df_cleaned['Time period']]
+        df_cleaned['Val_str'] = [str(round(i,2)) for i in df_cleaned['Value']]
+        df_cleaned['Val_text'] = [str(round(i,2))+' ppm' for i in df_cleaned['Value']]
+        fig = px.scatter(df_cleaned, x='Position', y='rank',
+                        size= 'Value',
+                        color='Area Name', text='Val_text',
+                        color_discrete_map= area_color,
+                        animation_frame='Time period',
+                        animation_group='Area Name',
+                        range_x=[-2,len(years)],
+                        range_y=[0.5,6.5]
+                        )
+        fig.update_xaxes(title='', visible=False)
+        fig.update_yaxes(autorange='reversed', title='Rank',
+                        visible=True, showticklabels=True)
+        fig.update_layout(xaxis=dict(showgrid=False),
+                        yaxis=dict(showgrid=True), width=800, height=500)
+        fig.update_traces(textposition='middle left')
+        fig.show()
 
+
+import datasets as ds
+df = ds.load_cerv()
+Rank_Based_Graph(df).animated_scatter()
+Rank_Based_Graph(df).animated_bars()
+Rank_Based_Graph(df).plot_full_animated_graph()
 
 
 class Analysis_Plot:

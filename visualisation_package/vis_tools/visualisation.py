@@ -791,10 +791,10 @@ class Rank_Based_Graph:
                         rank_text_size=16):
         region_df = self.df[self.df['Area Type'] == area_type]
         fig = px.bar(region_df, x='Area Name', y='Value', animation_frame='Time period', animation_group='Area Name',
-                     range_y=[region_df['Value'].min() - 10, region_df['Value'].max()],
+                     range_y=[region_df['Value'].min() - 10, region_df['Value'].max() + 10],
                      labels={ 'Value': 'Proportion Screened, %'},
                      hover_name='Area Name',
-                     color='Area Name', range_y=[50, 90],
+                     color='Area Name',
                      title='Region Ranking Change')
         fig.update_layout(width=width, height=height, showlegend=showlegend,
                 xaxis = dict(tickmode = 'linear', dtick = 1))

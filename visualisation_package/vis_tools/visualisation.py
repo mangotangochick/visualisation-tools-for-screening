@@ -141,7 +141,7 @@ class DataframePreprocessing:
         return temp_df
 
     
-class Region_Analysis(DataframePpreprocessing):
+class Region_Analysis(DataframePreprocessing):
     """
     Class to create a choropleth map of the country to show the percentage uptake of screening for each
     region in a speicified year. 
@@ -149,7 +149,7 @@ class Region_Analysis(DataframePpreprocessing):
     This class handles making an API GET request to recieve shapefile polygon
     cooridnate data, transforming the data, and plotting it to visualise the region category data.
     
-    This class inherits from the 'DataframePpreprocessing' class, and therefore shares all its methods.
+    This class inherits from the 'DataframePreprocessing' class, and therefore shares all its methods.
     
          
     Parameters
@@ -769,7 +769,6 @@ class Rank_Based_Graph:
     def __init__(self, df):
         self.df = df
     
-
     def list_areas(self, area_type="Region"):
         '''
         Prints available areas based on the area type chosen. 
@@ -849,45 +848,56 @@ class Rank_Based_Graph:
         return dict_color
     
 
+   
     def animated_bars(self, area_type="Region", list_reg=[
-                     'East of England region', 'London region', 
-                     'South East region'], sns_palette="Spectral",
-                     width=1000, height=600, showlegend=False,
-                     rank_text_size=16):
-        '''
-        Utilises other functions in class Rank_Based_Graph to clean dataframe,
-        select colour palette and plot an animated bar chart, of chosen areas' 
-        rank change over time. 
-        Parameters:
-        ----------
-        area_type: str
-            can be "Region", "UA", or "LA", default "Region"
-        list_reg: lst
-            list of region names to be compared over time
-            list_areas() function can be used to see options
-        sns_palette: str
-            name of seaborn palette to be used
-            https://seaborn.pydata.org/tutorial/color_palettes.html
-        width: int
-            width of the graph in pixels, default 1000
-        height: int
-            height of the graph in pixels, default 1000
-        showlegend: bool
-            if True, adds a legend of the areas, default False
-        rank_text_size: int
+                        'East of England region', 'London region', 
+                        'South East region'], sns_palette="Spectral",
+                        width=1000, height=600, showlegend=False,
+                        rank_text_size=16):
+            '''
+            Utilises other functions in class Rank_Based_Graph to clean dataframe,
+            select colour palette and plot an animated bar chart, of chosen areas' 
+            rank change over time. 
+            Parameters:
+            ----------
+            area_type: str
+                can be "Region", "UA", or "LA", default "Region"
+            list_reg: lst
+                list of region names to be compared over time
+                list_areas() function can be used to see options
+            sns_palette: str
+                name of seaborn palette to be used
+                https://seaborn.pydata.org/tutorial/color_palettes.html
+            width: int
+                width of the graph in pixels, default 1000
+            height: int
+                height of the graph in pixels, default 1000
+            showlegend: bool
+                if True, adds a legend of the areas, default False
+            rank_text_size: int
 
-        '''
-        df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
-        dict_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
-        fig = px.bar(df_cleaned, x='Area Name', y='Value',
-                    color='Area Name', text='rank',
-                    color_discrete_map= dict_color,
-                    animation_frame='Time period',
-                    animation_group='Area Name', range_y=[50, 90],
-                    labels={ 'Value': 'Proportion Screened, %'})
-        fig.update_layout(width=width, height=height, showlegend=showlegend,
-                        xaxis = dict(tickmode = 'linear', dtick = 1))
-        fig.update_traces(textfont_size=rank_text_size, textangle=0)
+            '''
+            df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
+            dict_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
+            fig = px.bar(df_cleaned, x='Area Name', y='Value',
+                        color='Area Name', text='rank',
+                        color_discrete_map= dict_color,
+                        animation_frame='Time period',
+                        animation_group='Area Name', range_y=[50, 90],
+                        labels={ 'Value': 'Proportion Screened, %'})
+            fig.update_layout(width=width, height=height, showlegend=showlegend,
+                            xaxis = dict(tickmode = 'linear', dtick = 1))
+            fig.update_traces(textfont_size=rank_text_size, textangle=0)
+            fig.show()
+            
+    def plot_full_animated_graph(self, area_type = 'Region'):
+        region_df = self.df[self.df['Area Type'] == area_type]
+        fig = px.bar(region_df, x='Area Name', y='Value', animation_frame='Time period', animation_group='Area Name',
+                     range_y=[region_df['Value'].min() - 10, region_df['Value'].max()],
+                     hover_name='Area Name',
+                     color='Area Name', 
+                     title='Region Ranking Change')
+
         fig.show()
 
 
@@ -918,8 +928,8 @@ class Analysis_Plot:
             self.ax.legend()
 
             
-# get statistics for country as a whole (class inherits from DataframePpreprocessing)
-class Country_Analysis(DataframePpreprocessing):
+# get statistics for country as a whole (class inherits from DataframePreprocessing)
+class Country_Analysis(DataframePreprocessing):
     
     def __init__(self):
         super().__init__()
@@ -977,6 +987,3 @@ class Country_Analysis(DataframePpreprocessing):
         plot.ax.xaxis.label.set_color('white')
         plot.ax.yaxis.label.set_color('white')
         plt.show()
-
-# Example of how to use Country_Analysis     
-#country_analysis = Country_Analysis()

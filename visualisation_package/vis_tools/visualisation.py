@@ -22,12 +22,11 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import plotly.express as px
+import plotly.offline as pyo
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import data
 package_dir = os.path.dirname(data.__file__)
-#from vis_tools import datasets as ds
-
 import requests
 from shapely.geometry import Point, Polygon
 import ast
@@ -888,7 +887,8 @@ class Rank_Based_Graph:
             fig.update_layout(width=width, height=height, showlegend=showlegend,
                             xaxis = dict(tickmode = 'linear', dtick = 1))
             fig.update_traces(textfont_size=rank_text_size, textangle=0)
-            fig.show()
+            pyo.plot(fig, filename='plots/animated_rank_from_list.html', auto_open=False)
+            pyo.iplot(fig)
             
     def plot_full_animated_graph(self, area_type = 'Region', sns_palette="Spectral",
                         width=1000, height=600, showlegend=False,
@@ -903,8 +903,8 @@ class Rank_Based_Graph:
         fig.update_layout(width=width, height=height, showlegend=showlegend,
                 xaxis = dict(tickmode = 'linear', dtick = 1))
         fig.update_traces(textfont_size=rank_text_size, textangle=0)
-        fig.show()
-
+        pyo.plot(fig, filename='plots/animated_rank_full.html', auto_open=False)
+        pyo.iplot(fig)
 
 
 class Analysis_Plot:

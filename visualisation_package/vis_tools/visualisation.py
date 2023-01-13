@@ -812,9 +812,7 @@ class Rank_Based_Graph:
         return dict_color
     
    
-    def animated_bars(self, area_type="LA", list_reg=[
-                        'Tendring', 'Rossendale', 'Bromsgrove','Wyre', 
-                        'Dartford', 'East Staffordshire'], 
+    def animated_bars(self, area_type="LA", list_reg=[], 
                         sns_palette="Spectral",
                         width=800, height=600, showlegend=False,
                         rank_text_size=16, open=False):
@@ -827,7 +825,7 @@ class Rank_Based_Graph:
         area_type: str
             can be "Region", "UA", or "LA", default "Region"
         list_reg: lst
-            list of region names to be compared over time
+            list of region names to be compared over time, deault: all
             list_areas() function can be used to see options
         sns_palette: str
             name of seaborn palette to be used
@@ -841,6 +839,8 @@ class Rank_Based_Graph:
         rank_text_size: int
 
         '''
+        if list_reg == []:
+            list_reg = self.list_areas(area_type)
         df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
         dict_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
         fig = px.bar(df_cleaned, x='Area Name', y='Value',
@@ -859,8 +859,9 @@ class Rank_Based_Graph:
     def plot_full_animated_graph(self, area_type = 'Region', sns_palette="Spectral",
                         width=800, height=600, showlegend=False,
                         rank_text_size=16):
-        dict_color = self.color_pal(df_cleaned, sns_palette=sns_palette)
+        
         region_df = self.df[self.df['Area Type'] == area_type]
+        dict_color = self.color_pal(region_df, sns_palette=sns_palette)
         fig = px.bar(region_df, x='Area Name', y='Value', animation_frame='Time period', animation_group='Area Name',
                      range_y=[region_df['Value'].min() - 10, region_df['Value'].max() + 10],
                      labels={ 'Value': 'Proportion Screened, %'},
@@ -905,29 +906,26 @@ class Rank_Based_Graph:
         fig.show()
 
 
-def visualise_rank(self, area_type="Region", list_reg=[
+def visualise_rank(area_type="Region", list_reg=[
                     'East of England region', 'London region', 
                     'South East region'], sns_palette="Spectral",
                     width=1000, height=600, showlegend=False,
                     rank_text_size=16):
     import datasets as ds
     df = ds.load_cerv()
-    Rank_Based_Graph(df).animated_scatter(self, area_type="Region", list_reg=[
-                    'East of England region', 'London region', 
-                    'South East region'], sns_palette="Spectral",
-                    width=1000, height=600, showlegend=False,
-                    rank_text_size=16)
-    Rank_Based_Graph(df).animated_bars(self, area_type="Region", list_reg=[
-                    'East of England region', 'London region', 
-                    'South East region'], sns_palette="Spectral",
-                    width=1000, height=600, showlegend=False,
-                    rank_text_size=16)
-    Rank_Based_Graph(df).plot_full_animated_graph(self, area_type="Region", list_reg=[
-                    'East of England region', 'London region', 
-                    'South East region'], sns_palette="Spectral",
-                    width=1000, height=600, showlegend=False,
-                    rank_text_size=16)
-
+    Rank_Based_Graph(df).animated_scatter(area_type=area_type, 
+                    list_reg=list_reg, sns_palette=sns_palette,
+                    width=width, height=height, showlegend=showlegend,
+                    rank_text_size=rank_text_size)
+    Rank_Based_Graph(df).animated_bars(area_type=area_type, 
+                    list_reg=list_reg, sns_palette=sns_palette,
+                    width=width, height=height, showlegend=showlegend,
+                    rank_text_size=rank_text_size)
+    Rank_Based_Graph(df).plot_full_animated_graph(area_type=area_type, 
+                    list_reg=list_reg, sns_palette=sns_palette,
+                    width=width, height=height, showlegend=showlegend,
+                    rank_text_size=rank_text_size)
+    plt.show()
 
 class Analysis_Plot:
     

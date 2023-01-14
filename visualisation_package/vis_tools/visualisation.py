@@ -415,7 +415,7 @@ class Region_Analysis(DataframePreprocessing):
                 }
             ],
             margin={"r": 0, "t": 100, "l": 5, "b": 0},
-            width=800,
+            width=1000,
             coloraxis_colorbar={
                 "title": "% Uptake",
                 "bordercolor": "#ccc",

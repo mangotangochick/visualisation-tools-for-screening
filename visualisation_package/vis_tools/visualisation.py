@@ -1304,7 +1304,7 @@ def visualise_rank(
     plt.show()
 
 
-class Analysis_Plot:
+class AnalysisPlot:
     def __init__(self, in_dimensions, title, x_label, y_label, show_legend):
         self.dimensions = in_dimensions
         self.fig = plt.figure(
@@ -1478,8 +1478,8 @@ class CountryAnalysis(DataframePreprocessing):
         # Set the label for the y-axis of the plot
         y_label = "Value"
 
-        # Create an instance of 'Analysis_Plot' to create a figure for plotting
-        plot = Analysis_Plot([8, 4], plot_title, x_label, y_label, False)
+        # Create an instance of 'AnalysisPlot' to create a figure for plotting
+        plot = AnalysisPlot([8, 4], plot_title, x_label, y_label, False)
 
         # Add the data to the created figure
         plot.ax.plot(self.clean_df["Value"], "co-", label="England")
@@ -1530,7 +1530,7 @@ class CountryAnalysis(DataframePreprocessing):
             .mean()["Value"]
         )
 
-        plot = Analysis_Plot(
+        plot = AnalysisPlot(
             [8, 4],
             "Screening programme uptake means in England across 2010-2016",
             "Year",

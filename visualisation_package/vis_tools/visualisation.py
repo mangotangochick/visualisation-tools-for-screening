@@ -370,7 +370,7 @@ class Region_Analysis(DataframePreprocessing):
             locations=map_df.index,
             color="value",
             color_continuous_scale=self.colorscale,
-            projection="orthographic",
+            projection="natural earth",
             hover_name="value",
             hover_data=["value"],
             custom_data=np.stack(("value", "area_name"), axis=-1),

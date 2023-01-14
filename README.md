@@ -17,7 +17,7 @@ The package can be used to clean and pre-process NHS screening uptake datasets a
 ![Feature Overview Map](visualisation_package/images/feature_overview.png?raw=true "Feature Overview Map")
 
 This python package contains three subfolders: 'vis_tools', 'data' and 'testing':
-* *vis_tools* contains files necessary to execute visualisations
+* *vis_tools* [vis_tools](visualisation_package/vis_tools)  contains files necessary to execute visualisations
     * datasets.py : contains functions for loading and pre-processing NHS screening uptake datasets for cervical, breast and bowel cancer
     * baseline.py : contains classes and functions necessary for creating basic summary statistic graphs, such as histograms and line plots
     * visualisation.py : contains classes and functions for more advanced visualisation tools, such as geographical choropleth maps and rank-based change graphs
@@ -33,7 +33,35 @@ This python package contains three subfolders: 'vis_tools', 'data' and 'testing'
 # External Resources and References 
 (1) Blanks, R.G. (2000) “Effect of NHS breast screening programme on mortality from breast cancer in England and Wales, 1990-8: Comparison of observed with predicted mortality,” BMJ, 321(7262), pp. 665–669. Available at: https://doi.org/10.1136/bmj.321.7262.665. 
 
-# Demo Project
-Please see the demo.ipynb file for a Jupyter notebook containing an annotated demo project
+# Demo Project 
+Please see the [demo.ipynb](visualisation_package/vis_tools/demo.ipynb) file for a Jupyter notebook containing an annotated demo project
 
-![Region Analysis Map](visualisation_package/images/region_analysis3.png "Region Analysis Map")
+# Example Plots
+
+## Basic Descriptive Plots for Data Exploration
+
+<img src="visualisation_package/images/histogram.png" alt="Histogram" width="400" height="300">
+
+## Basic Line Plots to compare areas over a Time period
+<img src="visualisation_package/images/lineplot.png" alt="Lineplot" width="400" height="300">
+
+## Regional and London Analysis Choropleth Maps
+
+<img src="visualisation_package/images/region_analysis3.png" alt="Region Analysis Map" width="400" height="300">
+<img src="visualisation_package/images/choropleth_london.png" alt="London Choropleth Map" width="400" height="300">
+
+## Deprivation Plots
+<img src="visualisation_package/images/deprivation.png" alt="Deprivation Barchart" width="600" height="300">
+
+## Rank-based Change Interactive plots
+<img src="visualisation_package/images/rank_scatter.png" alt="Rank change Scatter" width="400" height="300">
+<img src="visualisation_package/images/rank_bars.png" alt="Rank change Bars" width="400" height="300">
+
+## Country-wide lineplots
+<img src="visualisation_package/images/screening_england.png" alt="Screening in England" width="400" height="300">
+
+
+
+
+
+

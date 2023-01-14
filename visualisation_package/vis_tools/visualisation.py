@@ -673,7 +673,7 @@ class LondonMap():
         self.time_period = time_period
         self.val_labels = val_labels
         
-    def plot_london_map(self):
+    def plot_london_map(self, colour_palette = 'blue'):
         filepath = os.path.join(package_dir, 'shape_files', 'London_Borough_Excluding_MHW.shp')
         loc_auth = gpd.read_file(filepath)
 
@@ -702,8 +702,12 @@ class LondonMap():
         # Set figure size
         plt.figure(figsize=(20, 10))
 
-        # Create colourmap
-        cmap = LinearSegmentedColormap.from_list('mycmap', ['#FFFFFF', '#0F2B7F', '#0078B4'])
+        if colour_palette == 'blue':
+            cmap = LinearSegmentedColormap.from_list('mycmap', ['#FFFFFF', '#0F2B7F', '#0078B4'])
+        elif colour_palette == 'green':
+            cmap = LinearSegmentedColormap.from_list('mycmap', ['#FFFFFF', '#FEFCCA', '#A2BD3F'])
+        elif colour_palette == 'fire':
+            cmap = LinearSegmentedColormap.from_list('mycmap', ['#FFFFFF', '#FF0000', '#FFFF00'])
 
         # Plot map
         ldn_map.plot(column='Value', cmap=cmap, legend=True, figsize=(50, 30))
@@ -713,17 +717,17 @@ class LondonMap():
             plt.title(f'UK Screening Uptake by London Borough in {self.time_period}', fontsize=50)
             for idx, row in ldn_map.iterrows():
                 plt.annotate(row['Area Name'], xy=(row['geometry'].centroid.x, row['geometry'].centroid.y),
-                        horizontalalignment='center', fontsize=15)
-                plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 500),
-                        horizontalalignment='right', fontsize=15)
+                        horizontalalignment='center', fontsize=20)
+                plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 700),
+                        horizontalalignment='right', fontsize=20)
         else:
             plt.title(f'UK Screening Uptake by London Borough Means', fontsize=50)
             for idx, row in ldn_map.iterrows():
                         plt.annotate(row['Area Name'], xy=(row['geometry'].centroid.x, row['geometry'].centroid.y),
-                                horizontalalignment='center', fontsize=15)
+                                horizontalalignment='center', fontsize=20)
                         if self.val_labels == True:
-                            plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 500),
-                                    horizontalalignment='right', fontsize=15)
+                            plt.annotate(str(round(row['Value'],1)), xy=(row['geometry'].centroid.x, row['geometry'].centroid.y - 700),
+                                    horizontalalignment='right', fontsize=20)
         plt.show()    
         plt.close()
             
@@ -1021,7 +1025,8 @@ class Country_Analysis(DataframePreprocessing):
         plt.plot(cervical_mean.index, cervical_mean.values, 'x', markersize=5, color='white', label="Cervical Cancer")
         plt.plot(breast_mean.index, breast_mean.values, 'x', markersize=5, color='white', label="Breast Cancer")
         plt.plot(bowel_mean.index, bowel_mean.values, 'x', markersize=5, color='white', label="Bowel Cancer")
+        plt.gcf().set_size_inches(13, 8)
+        plt.gcf().set_dpi(150)
         
-        # Show the plot
         plt.show()
 

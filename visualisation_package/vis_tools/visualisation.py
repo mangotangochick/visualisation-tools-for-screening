@@ -19,7 +19,7 @@ Rank_Based_Graphs:
     Bar chart with: animated_bars()
     Scatter plot with: animated_scatter()
 
-Country_Analysis:
+CountryAnalysis:
     Class to analyse overall country trends in the datasets and create line
     plots to visualise the trends.
 """
@@ -1330,7 +1330,7 @@ class Analysis_Plot:
             self.ax.legend()
 
 
-class Country_Analysis(DataframePreprocessing):
+class CountryAnalysis(DataframePreprocessing):
     """
     Class to analyse overall country trends in the datasets and create line
     plots to visualise the trends. Provides visualisation tools and analysis

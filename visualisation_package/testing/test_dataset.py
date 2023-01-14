@@ -20,15 +20,16 @@ def test_col_pres(cancer_type):
         data = ds.load_cerv()
     df_columns = list(data.columns)
     assert columns in df_columns == True
-
-def test_region_analysis_year_setting():
-    region_test = visualisation.Region_Analysis(2016, False)
-    assert region_test.year == 2016
     
 def test_get_geoshape_info_from_api_request_for_areacode():
-    region_test = visualisation.Region_Analysis(2016, False)
+    region_test = visualisation.Region_Analysis()
     shape, was_error = region_test.get_geoshape_info_from_api_request_for_areacode('E12000001')
     assert was_error == False
+
+def test_get_all_region_area_codes():
+    region_test = Region_Analysis()
+    regions_return = region_test.get_all_region_area_codes()
+    assert len(regions_return) == 9
 
 
 test_col_pres('cervical')

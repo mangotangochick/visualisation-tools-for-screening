@@ -856,18 +856,20 @@ class Rank_Based_Graph:
         pyo.iplot(fig)
             
 
+        
     def plot_full_animated_graph(self, area_type = 'Region', sns_palette="Spectral",
                         width=800, height=600, showlegend=False,
                         rank_text_size=16):
-        
-        region_lst = self.df.loc[self.df['Area Type'] == area_type]['Area Name'].to_list()
+        '''
+        region_lst = self.df.loc[self.df.loc['Area Type'] == area_type]['Area Name'].to_list()
         region_df = self.clean_rank(list_reg=region_lst, area_type=area_type)
-        dict_color = self.color_pal(region_df, sns_palette=sns_palette)
+        dict_color = self.color_pal(region_df, sns_palette=sns_palette)'''
+        region_df = self.df[self.df['Area Type'] == area_type]
         fig = px.bar(region_df, x='Area Name', y='Value', animation_frame='Time period', animation_group='Area Name',
                      range_y=[region_df['Value'].min() - 10, region_df['Value'].max() + 10],
                      labels={ 'Value': 'Proportion Screened, %'},
                      hover_name='Area Name',
-                     color=dict_color,
+                     color='Area Name',
                      title='Region Ranking Change')
         fig.update_layout(width=width, height=height, showlegend=showlegend,
                 xaxis = dict(tickmode = 'linear', dtick = 1))
@@ -888,7 +890,7 @@ class Rank_Based_Graph:
 
         df_cleaned['Position'] = [years.index(i) for i in df_cleaned['Time period']]
         df_cleaned['Val_str'] = [str(round(i,2)) for i in df_cleaned['Value']]
-        df_cleaned['Val_text'] = [str(round(i,2))+' ppm' for i in df_cleaned['Value']]
+        df_cleaned['Val_text'] = [str(round(i,2))+' %' for i in df_cleaned['Value']]
         fig = px.scatter(df_cleaned, x='Position', y='rank',
                         size= 'Value',
                         color='Area Name', text='Val_text',

@@ -35,6 +35,7 @@ import ast
 from fiona.crs import from_epsg
 import shapefile as shp # pyshp
 import pyproj
+from datasets import *
 
 class DataframePreprocessing:
         
@@ -908,7 +909,7 @@ class Analysis_Plot:
     
     def __init__(self, in_dimensions, title, x_label, y_label, show_legend):
         self.dimensions = in_dimensions
-        self.fig = plt.figure(figsize=(self.dimensions[0], self.dimensions[1]), facecolor=(0.075, 0.075, 0.075))
+        self.fig = plt.figure(figsize=(self.dimensions[0], self.dimensions[1]), facecolor=('#D3D3D3'))
         self.ax = self.fig.add_subplot()
         self.legend_visible = show_legend
         
@@ -973,7 +974,7 @@ class Country_Analysis(DataframePreprocessing):
         return self.clean_df['Value'].idxmin()
     
     def plot_value_across_years(self):
-        plot_title = 'How \'Value\' for England has changed between 2010 and 2016\n'
+        plot_title = 'How \'Value\' for England has changed between 2010 and 2016 for Cervical Cancer Screening Uptake (%)\n'
         x_label = 'Year'
         y_label = 'Value'
 
@@ -984,8 +985,43 @@ class Country_Analysis(DataframePreprocessing):
         # as 'show_legend' set to False, won't show legend
         plot.update_legend()
 
-        # set plot text colour to white
-        plot.ax.set_title(plot_title, color='white')
-        plot.ax.xaxis.label.set_color('white')
-        plot.ax.yaxis.label.set_color('white')
         plt.show()
+
+    def lineplot_cancer_England(self, cervical_df=load_cerv(), breast_df=load_breast(), bowel_df=load_bowel()):
+        '''
+        This function takes in three dataframes from the default datasets provided:
+        one for cervical cancer, 
+        one for breast cancer and one for bowel cancer, 
+        and produces a lineplot which shows the mean value of the cervical, 
+        breast and bowel cancer datasets over 2010-2016 for only the England area.
+        
+        Parameters:
+        cervical_df (pd.DataFrame): A dataframe containing cervical cancer data
+        breast_df (pd.DataFrame): A dataframe containing breast cancer data
+        bowel_df (pd.DataFrame): A dataframe containing bowel cancer data
+        
+        Returns:
+        None
+        '''
+    
+        # Get the mean value for the cervical, breast and bowel cancer datasets where Area Name = England
+        cervical_mean = cervical_df[cervical_df['Area Name'] == 'England'].groupby('Time period').mean()['Value']
+        breast_mean = breast_df[breast_df['Area Name'] == 'England'].groupby('Time period').mean()['Value']
+        bowel_mean = bowel_df[bowel_df['Area Name'] == 'England'].groupby('Time period').mean()['Value']
+        
+        plot = Analysis_Plot([8, 4], 'Screening programme uptake means in England across 2010-2016', \
+            'Year', 'Percentage Uptake (%)', False)
+
+        # Plot the means for the three datasets over 2010-2016
+        plt.plot(cervical_mean, label='Cervical Cancer') 
+        plt.plot(breast_mean, label='Breast Cancer')
+        plt.plot(bowel_mean, label='Bowel Cancer')
+        plt.legend()
+
+        plt.plot(cervical_mean.index, cervical_mean.values, 'x', markersize=5, color='white', label="Cervical Cancer")
+        plt.plot(breast_mean.index, breast_mean.values, 'x', markersize=5, color='white', label="Breast Cancer")
+        plt.plot(bowel_mean.index, bowel_mean.values, 'x', markersize=5, color='white', label="Bowel Cancer")
+        
+        # Show the plot
+        plt.show()
+

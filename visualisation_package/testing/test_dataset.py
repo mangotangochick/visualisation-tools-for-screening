@@ -22,14 +22,25 @@ def test_col_pres(cancer_type):
     assert columns in df_columns == True
     
 def test_get_geoshape_info_from_api_request_for_areacode():
-    region_test = visualisation.Region_Analysis()
+    region_test = Region_Analysis('mint')
     shape, was_error = region_test.get_geoshape_info_from_api_request_for_areacode('E12000001')
     assert was_error == False
-
+    
 def test_get_all_region_area_codes():
-    region_test = Region_Analysis()
+    # As there are 9 regions, should return a list with 9 items
+    region_test = Region_Analysis('mint')
     regions_return = region_test.get_all_region_area_codes()
     assert len(regions_return) == 9
+    
+def test_process_colorscale_acceptable():
+    # As 'armyrose' is an acceptable colorscale - should set to self.colorscale
+    region_test = Region_Analysis('armyrose')
+    assert region_test.colorscale == 'armyrose'
+    
+def test_process_colorscale_unacceptable():
+    # As 'madeupcolorscale' is an unacceptable colorscale - should set to default ('mint')
+    region_test = Region_Analysis('madeupcolorscale')
+    assert region_test.colorscale == 'mint'
 
 
 test_col_pres('cervical')

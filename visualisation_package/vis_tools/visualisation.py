@@ -6,7 +6,7 @@ uptake, and can be customised to display data in formats such as choropleth maps
 interactive bar charts making it easy to compare different regions over time.
 
 Region_Analysis:
-    Creates an interactive choropleth map of country separated into regions to visualise screening uptake.
+    Creates an animated interactive choropleth map of country separated into regions to visualise screening uptake.
 
 LondonMap:
     Plots and saves a London map displaying the screening uptake by boroughs.
@@ -106,36 +106,33 @@ class DataframePreprocessing:
         # Return the updated dataframe
         return temp_df
 
-class Region_Analysis(DataframePreprocessing):
+class Region_Analysis(Dataframe_preprocessing):
     """
     Class to create a choropleth map of the country to show the percentage uptake of screening for each
-    region in a speicified year. 
+    region, animating to show the change across the dataset time period (2010-2016). 
     
     This class handles making an API GET request to recieve shapefile polygon
     cooridnate data, transforming the data, and plotting it to visualise the region category data.
     
-    This class inherits from the 'DataframePreprocessing' class, and therefore shares all its methods.
+    This class inherits from the 'Dataframe_preprocessing' class, and therefore shares all its methods.
     
          
     Parameters
     ----------
-    in_year: int
-        The 'Time Period' to filter the dataset to; the year in focus for analysis (e.g. 2010).
+    None
     
     Returns
     -------
     None
     """
     
-    def __init__(self, in_year):
+    def __init__(self):
         super().__init__()
-        # Set the 'Time period' focus for dataset filtering
-        self.year = in_year
         # Set the name to be used for storing shapefiles to be used for creating map visuals
         self.directory_name = 'Shapefiles'
         
         # Main function to create and display Plotly express (interactable) choropleth map of regions
-        was_error = self.create_map_of_all_regions_for_year()
+        was_error = self.create_map_of_all_regions()
         
         # If an error was encountered creating the map
         if was_error:
@@ -170,7 +167,7 @@ class Region_Analysis(DataframePreprocessing):
             print('Created directory')
         
     
-    def create_map_of_all_regions_for_year(self):
+    def create_map_of_all_regions(self):
         """
         Function to handle the creation of the choropleth map. For increased readbility, re-usability, and
         expandability, the main steps of this process are broken into separate functions, which are called
@@ -188,8 +185,8 @@ class Region_Analysis(DataframePreprocessing):
             to create the map
         """
         
-        # Create a filtered dataframe of only the regions (only for specified time period)
-        self.regions_df = self.get_all_regions()
+        # Create two filtered dataframes of only the regions; one for a specified year, and the other with data for all years
+        self.all_years_regions_df, self.regions_df = self.get_all_regions()
         # Create a list of 'Area Code's for all regions for accessing regions & querying dataset
         region_codes = self.get_all_region_area_codes()
         
@@ -261,22 +258,71 @@ class Region_Analysis(DataframePreprocessing):
         map_df.to_crs(pyproj.CRS.from_epsg(4326), inplace=True)
         
         # Create the Plotly express map using the created dataframe to populate it
-        fig = px.choropleth(map_df, geojson=map_df.geometry, 
-                    locations=map_df.index, color='value',
-                    height=500,
-                   color_continuous_scale='mint')
-        fig.update_geos(fitbounds="locations", visible=True)
-        # Set the title of the plot
+        fig = px.choropleth(map_df,
+                            geojson=map_df.geometry, 
+                            locations=map_df.index,
+                            color='value',
+                            color_continuous_scale='mint',
+                            projection='orthographic',
+                            hover_name='value',
+                            hover_data=['value'],
+                            custom_data = np.stack(('value', 'area_name'), axis=-1),
+                            animation_frame='year'
+                            )
+        
+        # Styling settings for the globe projection
+        fig.update_geos(fitbounds='locations',
+                        visible=False,
+                        resolution=50,
+                        showcountries=True,
+                        countrycolor='#969696',
+                        showland=True,
+                        landcolor='#cccccc')
+        
+        
+        # Styling and layout settings for the plot
         fig.update_layout(
-            title_text=f'Choropleth map to show percentage uptake of screening for each region in {self.year}'
-        )
-        # Position the title in the centre of the view
-        fig.update(layout = dict(title=dict(x=0.5)))
-        # Layout settings for the colorbar to represent 'Value' (legend)
-        fig.update_layout(
-            margin={"r":0,"t":30,"l":10,"b":10},
+            title={
+            'text': 'Choropleth map to show % uptake of screening<br> for England regions from 2010 to 2016',
+            'y':0.95,
+            'x':0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'
+            },
+            sliders=[{
+                'currentvalue': {'prefix': 'Year: '},
+                'len': 0.6,
+                'xanchor': 'left',
+                'bgcolor': '#519793'
+                }],
+            margin={'r':0,'t':100,'l':10,'b':10},
+            width=800,
             coloraxis_colorbar={
-                'title':'Percent Uptake'})
+                'title':'% Uptake',
+                'bordercolor': '#ccc',
+                'borderwidth': 2,
+                'orientation': 'v',
+                'x': 0,
+                'xpad': 30,
+                'xanchor': 'left'
+                }
+        )
+        
+        # Set colorbar font sizes
+        fig.update_coloraxes(colorbar_title_font=dict(size=15))
+        fig.update_coloraxes(colorbar_tickfont=dict(size=14))
+        
+        # Set hovertemplate for map (displayed text when hovering on region)
+        fig.update_traces(
+            hovertemplate=''.join([
+                '%{customdata[1]}',
+                '<br><b>',
+                '%{customdata[0]:0.2f}',
+                '%',
+                '</b>'
+            ])
+        )
+        
                 
         # Present the map to the user
         fig.show()
@@ -378,15 +424,42 @@ class Region_Analysis(DataframePreprocessing):
         merged_df['geometry'] = None
         merged_df['value'] = None
         merged_df['area_code'] = None
+        merged_df['area_name'] = None
+        merged_df['year'] = None
         # Correct the projection settings
         merged_df.crs = from_epsg(4326)
         
+        # Change the datatype of the year column to integer to reduce storage requirements
+        merged_df = merged_df.astype({'year': np.int32})
+                
         # Iterate through each region using collected region codes
         for code in area_codes:
             # Update the current region of focus
             self.current_area_code = code
             # Create a dataframe for the current region
             geodf, was_error = self.create_region_geodf(code)
+            # Change the datatype of the year column to match that of the combined dataframe
+            geodf = geodf.astype({'year': np.int32})
+            
+            # Rather than calculating geometries at each year, 
+            # copy existing dataframe data and change year specific data to reduce computation time
+            temp_geodf = geodf.copy(deep=True)
+            # Starting from 2016, for each remaining year
+            for i in range(6):
+                # Create a copy of the temporary dataframe
+                altered_geodf = temp_geodf.copy(deep=True)
+                # For each row in the dataframe
+                for index, row in altered_geodf.iterrows():
+                    # Alter the 'year' value to the current year
+                    altered_geodf.loc[index, 'year'] = 2016-(i+1)
+                    
+                # Get 'Value' at current year from the all years dataframe
+                val = self.all_years_regions_df.loc[(self.all_years_regions_df['Area Code'] == code)&(self.all_years_regions_df['Time period'] == 2016-(i+1)), 'Value'].values[0]
+                # Alter the new dataframe 'value' to the correct value for current year
+                altered_geodf.loc[index, 'value'] = val
+            
+                # Combine the dataframes
+                geodf = gpd.GeoDataFrame(pd.concat([geodf, altered_geodf], ignore_index=True))
             
             # If no error was encountered creating dataframe
             if not was_error:
@@ -626,7 +699,15 @@ class Region_Analysis(DataframePreprocessing):
             
             # Add the current 'Area Code' to the dataframe entry
             newdata.loc[i, 'area_code'] = self.current_area_code
-        
+            
+            
+            # Add the current 'Area Name' to the dataframe entry
+            rgn_name = self.regions_df.loc[self.regions_df['Area Code'] == self.current_area_code, 'Area Name'].values[0]
+            newdata.loc[i, 'area_name'] = rgn_name.replace(' region', '')
+            
+            # Add the initial year to the dataframe
+            newdata.loc[i, 'year'] = 2016
+                    
         # Correct the projection settings
         newdata.crs = from_epsg(4326)
         
@@ -644,14 +725,22 @@ class Region_Analysis(DataframePreprocessing):
         
         Returns
         -------
-        filtered_df[filtered_df['Area Type'] == 'Region']: pandas dataframe
-            A dataframe containing only region data for a specified year.
+        filtered_regions_df:
+            A dataframe containing only region data, for all years
+            
+        year_regions_df:
+            A dataframe containing only region data, for a specified year
         """
         
-        # Filter the dataframe to only include entries of the specified 'Time period'
-        filtered_df = self.init_df[self.init_df['Time period'] == self.year]
-        # Filter the updated dataframe to only include regions, and return the dataframe
-        return filtered_df[filtered_df['Area Type'] == 'Region']
+        # Filter the dataframe to only include regions
+        filtered_regions_df = self.init_df[self.init_df['Area Type'] == 'Region']
+        # Copy the dataframe to another, for a year specific dataframe
+        year_regions_df = filtered_regions_df.copy(deep=True)
+        # Filter the updated dataframe to only include entries for one year
+        year_regions_df = year_regions_df[year_regions_df['Time period'] == 2016]
+        # Return the two filtered dataframes
+        return filtered_regions_df, year_regions_df
+    
     
 
 

@@ -118,6 +118,13 @@ class Region_Analysis(DataframePreprocessing):
     
     This class inherits from the 'Dataframe_preprocessing' class, and therefore shares all its methods.
     
+    To initialise this class, a user must provide a plotly express 'colorscale'; 
+    the default is 'mint'. If the user does not provide one, or provides an unacceptable
+    colorscale, the default will be used.
+    
+    For more information on available colorscales, run the command:
+    'print(px.colors.named_colorscales())'.
+    
          
     Parameters
     ----------
@@ -181,6 +188,13 @@ class Region_Analysis(DataframePreprocessing):
         recognised name. Allows the colorscale to be used if recognised,
         or returns an alternative (default) setting if it is not recognised.
         
+        If the user does not provide one, or provides an unacceptable
+        colorscale, the default will be used.
+        
+        For more information on available colorscales, run the command:
+        'print(px.colors.named_colorscales())', or read the Plotly
+        documentation at: https://plotly.com/python/builtin-colorscales/.
+        
              
         Parameters
         ----------
@@ -197,16 +211,23 @@ class Region_Analysis(DataframePreprocessing):
             The input colorscale, in lowercase form.
         """
         
-        # If the specified colorscale is not recognised
-        if in_colorscale.lower() not in px.colors.named_colorscales():
-            # Indicate to the user that it is not acceptable
-            print('Error setting colorscale: colorscale not recognised. Setting default instead.')
-            # Return default setting: 'mint'
+        # If no colorscale was provided
+        if (in_colorscale == None) or (in_colorscale == ''):
+            # Indicate to user that no colorscale was provided
+            print('Error setting colorscale: no colorscale provided. Setting default instead.')
             return 'mint'
-        # If the specified colorscale is recognised
+        # If a colorscale has been provided
         else:
-            # Return the colorscale as an acceptable option
-            return in_colorscale.lower()
+            # If the specified colorscale is not recognised
+            if in_colorscale.lower() not in px.colors.named_colorscales():
+                # Indicate to the user that it is not acceptable
+                print('Error setting colorscale: colorscale not recognised. Setting default instead.')
+                # Return default setting: 'mint'
+                return 'mint'
+            # If the specified colorscale is recognised
+            else:
+                # Return the colorscale as an acceptable option
+                return in_colorscale.lower()
         
     
     def create_map_of_all_regions(self):

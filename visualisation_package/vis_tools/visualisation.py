@@ -215,19 +215,30 @@ class Region_Analysis(DataframePreprocessing):
         if (in_colorscale == None) or (in_colorscale == ''):
             # Indicate to user that no colorscale was provided
             print('Error setting colorscale: no colorscale provided. Setting default instead.')
+            # Return default setting: 'mint'
             return 'mint'
         # If a colorscale has been provided
         else:
-            # If the specified colorscale is not recognised
-            if in_colorscale.lower() not in px.colors.named_colorscales():
-                # Indicate to the user that it is not acceptable
-                print('Error setting colorscale: colorscale not recognised. Setting default instead.')
+            # Check if input is of correct data type to avoid errors
+            is_string = isinstance(in_colorscale, str)
+            # If the input is of the correct data type
+            if is_string:
+                # If the specified colorscale is not recognised
+                if in_colorscale.lower() not in px.colors.named_colorscales():
+                    # Indicate to the user that it is not acceptable
+                    print('Error setting colorscale: colorscale not recognised. Setting default instead.')
+                    # Return default setting: 'mint'
+                    return 'mint'
+                # If the specified colorscale is recognised
+                else:
+                    # Return the colorscale as an acceptable option
+                    return in_colorscale.lower()
+            # If the input is not the correct data type
+            else:
+                # Indicate incorrect data type to the user
+                print('Error setting colorscale: provided colorscale is of incorrect data type. Setting default instead.')
                 # Return default setting: 'mint'
                 return 'mint'
-            # If the specified colorscale is recognised
-            else:
-                # Return the colorscale as an acceptable option
-                return in_colorscale.lower()
         
     
     def create_map_of_all_regions(self):

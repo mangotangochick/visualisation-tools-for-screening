@@ -49,8 +49,7 @@ A guide on installation of the package
 `pip install vistools_for_screening`  
 
 The environment required to run this package is contained in the environment.yml file.  
-To set up the environment:  
-`conda env create -n NEW_NAME --file environment.yml` 
+To set up the environment: `conda env create -n NEW_NAME --file environment.yml` 
 
 # External Resources and References 
 <a name="refs"></a>

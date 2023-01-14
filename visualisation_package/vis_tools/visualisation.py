@@ -849,11 +849,33 @@ class LondonMap():
     """
     
     def __init__(self, df, time_period = int, val_labels = bool):
+        """
+        The __init__ function initializes an object with the given dataframe, 
+        time period and label value.
+        """
+
         self.df = df
         self.time_period = time_period
         self.val_labels = val_labels
-        
+
     def plot_london_map(self, colour_palette = 'blue'):
+        """
+        The plot_london_map function plots a map of London based on the given parameters. 
+        It takes a colour palette as an optional argument, with the default value being 'blue'. 
+        The map displays either the mean value of a given time period or all values of that period,
+        depending on the user's input.
+
+        Parameters:
+            df (pandas dataframe): 
+                Dataframe containing the values of the map
+            time_period (int): 
+                An integer representing a year (2010-2016)
+            val_labels (bool): 
+                Boolean value indicating whether labels should be added to the map
+            colour_palette (str): 
+                A string indicating the colour palette used for the map (blue, green, fire)
+        """
+
         filepath = os.path.join(package_dir, 'shape_files', 'London_Borough_Excluding_MHW.shp')
         loc_auth = gpd.read_file(filepath)
 

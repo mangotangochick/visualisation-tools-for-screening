@@ -30,6 +30,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import data
 package_dir = os.path.dirname(data.__file__)
 import requests
+import numpy as np
 from shapely.geometry import Point, Polygon
 import ast
 from fiona.crs import from_epsg

@@ -36,42 +36,6 @@ from fiona.crs import from_epsg
 import shapefile as shp # pyshp
 import pyproj
 
-def basic_data_cleaning(df, age=bool, sex=bool):
-
-    """
-    Function for basic data cleaning of an NHS screening uptake dataset.
-    
-    This function returns two cleaned datasets, one with no deprivation deciles and one with deprivation deciles
-
-    Parameters
-    ----------
-    df: pandas DataFrame
-        DataFrame containing the data to be explored.
-    age: bool
-        If True, then executes code that removes age information
-    sex: bool
-        If True, then executes code that removes sex information
-    
-    Returns
-    -------
-    df: pandas DataFrame
-        cleaned dataframe    
-    """
-
-    # Fill NaNs
-    df['Category Type'].fillna('NA', inplace=True)
-    keep_col = ['Area Code', 'Area Name', 'Area Type', 'Time period', 'Value']
-    if age==True:
-        keep_col.append('Age')
-
-    if sex==True:
-        keep_col.append('Sex')
-
-    # Remove Unnecessary Columns
-    df = df[keep_col]
-    return df
-
-
 class DataframePreprocessing:
         
     """
@@ -141,7 +105,6 @@ class DataframePreprocessing:
         # Return the updated dataframe
         return temp_df
 
-    
 class Region_Analysis(DataframePreprocessing):
     """
     Class to create a choropleth map of the country to show the percentage uptake of screening for each
@@ -777,6 +740,9 @@ class Rank_Based_Graph:
         ----------
         area_type: str
             either a "Region", "UA, or "LA", default = "Region"
+        Return:
+        ar_lst: lst of str
+            list of areas in the chosen area type.
         '''
         # Slicing the dataframe:
         self.df = self.df[self.df["Area Type"]==area_type]
@@ -805,14 +771,13 @@ class Rank_Based_Graph:
         # Selects areas we want to compare
         self.df = self.df[self.df["Area Type"]==area_type]
         # Selects which regions to compare
-        list_select=list_reg
-        df_select = self.df[self.df['Area Name'].isin(list_select)]
+        df_select = self.df[self.df['Area Name'].isin(list_reg)]
         # Changing the data type into string:
         df_select = df_select.astype({'Area Name': str})
         df_select.reset_index(inplace=True)
-        df_year = df_select
-        if "index" in df_year.columns:
-            df_year = df_year.drop(columns=["index"])
+        # Drops the index column, if one is present.
+        if "index" in df_select.columns:
+            df_year = df_select.drop(columns=["index"])
     
         # Splitting data into dfs by the year and ranking based on Value.
         keep = []
@@ -848,12 +813,10 @@ class Rank_Based_Graph:
         dict_color = dict(zip(area_name, pal))
         return dict_color
     
-
    
-    def animated_bars(self, area_type="Region", list_reg=[
-                        'East of England region', 'London region', 
-                        'South East region'], sns_palette="Spectral",
-                        width=1000, height=600, showlegend=False,
+    def animated_bars(self, area_type="LA", list_reg=[], 
+                        sns_palette="Spectral",
+                        width=800, height=600, showlegend=False,
                         rank_text_size=16, open=False):
         '''
         Utilises other functions in class Rank_Based_Graph to clean dataframe,
@@ -864,15 +827,15 @@ class Rank_Based_Graph:
         area_type: str
             can be "Region", "UA", or "LA", default "Region"
         list_reg: lst
-            list of region names to be compared over time
+            list of region names to be compared over time, deault: all
             list_areas() function can be used to see options
         sns_palette: str
             name of seaborn palette to be used
             https://seaborn.pydata.org/tutorial/color_palettes.html
         width: int
-            width of the graph in pixels, default 1000
+            width of the graph in pixels, default 800
         height: int
-            height of the graph in pixels, default 1000
+            height of the graph in pixels, default 600
         showlegend: bool
             if True, adds a legend of the areas, default False
         rank_text_size: int
@@ -893,15 +856,20 @@ class Rank_Based_Graph:
         pyo.iplot(fig)
             
 
+        
     def plot_full_animated_graph(self, area_type = 'Region', sns_palette="Spectral",
-                        width=1000, height=600, showlegend=False,
+                        width=800, height=600, showlegend=False,
                         rank_text_size=16):
+        '''
+        region_lst = self.df.loc[self.df.loc['Area Type'] == area_type]['Area Name'].to_list()
+        region_df = self.clean_rank(list_reg=region_lst, area_type=area_type)
+        dict_color = self.color_pal(region_df, sns_palette=sns_palette)'''
         region_df = self.df[self.df['Area Type'] == area_type]
         fig = px.bar(region_df, x='Area Name', y='Value', animation_frame='Time period', animation_group='Area Name',
-                     range_y=[region_df['Value'].min() - 10, region_df['Value'].max()],
+                     range_y=[region_df['Value'].min() - 10, region_df['Value'].max() + 10],
                      labels={ 'Value': 'Proportion Screened, %'},
                      hover_name='Area Name',
-                     color='Area Name', 
+                     color='Area Name',
                      title='Region Ranking Change')
         fig.update_layout(width=width, height=height, showlegend=showlegend,
                 xaxis = dict(tickmode = 'linear', dtick = 1))
@@ -909,9 +877,10 @@ class Rank_Based_Graph:
         pyo.plot(fig, filename='plots/animated_rank_full.html', auto_open=False)
         pyo.iplot(fig)
 
-    def animated_scatter(self, area_type="Region", list_reg=[
-                            'East of England region', 'London region', 
-                            'South East region'], sns_palette="Spectral",
+
+    def animated_scatter(self, area_type="LA", list_reg=[
+                            'Tendring', 'Rossendale', 'Bromsgrove','Wyre', 
+                            'Dartford', 'East Staffordshire'], sns_palette="Spectral",
                             width=1000, height=600, showlegend=False,
                             rank_text_size=16):
         df_cleaned = self.clean_rank(list_reg=list_reg, area_type=area_type)
@@ -921,7 +890,7 @@ class Rank_Based_Graph:
 
         df_cleaned['Position'] = [years.index(i) for i in df_cleaned['Time period']]
         df_cleaned['Val_str'] = [str(round(i,2)) for i in df_cleaned['Value']]
-        df_cleaned['Val_text'] = [str(round(i,2))+' ppm' for i in df_cleaned['Value']]
+        df_cleaned['Val_text'] = [str(round(i,2))+' %' for i in df_cleaned['Value']]
         fig = px.scatter(df_cleaned, x='Position', y='rank',
                         size= 'Value',
                         color='Area Name', text='Val_text',
@@ -935,17 +904,31 @@ class Rank_Based_Graph:
         fig.update_yaxes(autorange='reversed', title='Rank',
                         visible=True, showticklabels=True)
         fig.update_layout(xaxis=dict(showgrid=False),
-                        yaxis=dict(showgrid=True), width=800, height=500)
+                        yaxis=dict(showgrid=True), width=width, height=height)
         fig.update_traces(textposition='middle left')
         fig.show()
 
 
-import datasets as ds
-df = ds.load_cerv()
-Rank_Based_Graph(df).animated_scatter()
-Rank_Based_Graph(df).animated_bars()
-Rank_Based_Graph(df).plot_full_animated_graph()
-
+def visualise_rank(area_type="LA", list_reg=[
+                    'Tendring', 'Rossendale', 'Bromsgrove','Wyre', 
+                    'Dartford', 'East Staffordshire'], sns_palette="Spectral",
+                    width=800, height=600, showlegend=False,
+                    rank_text_size=16):
+    import datasets as ds
+    df = ds.load_cerv()
+    Rank_Based_Graph(df).animated_scatter(area_type=area_type, 
+                    list_reg=list_reg, sns_palette=sns_palette,
+                    width=width, height=height, showlegend=showlegend,
+                    rank_text_size=rank_text_size)
+    Rank_Based_Graph(df).animated_bars(area_type=area_type, 
+                    list_reg=list_reg, sns_palette=sns_palette,
+                    width=width, height=height, showlegend=showlegend,
+                    rank_text_size=rank_text_size)
+    Rank_Based_Graph(df).plot_full_animated_graph(area_type="Region", 
+                    sns_palette=sns_palette,
+                    width=width, height=height, showlegend=showlegend,
+                    rank_text_size=rank_text_size)
+    plt.show()
 
 class Analysis_Plot:
     

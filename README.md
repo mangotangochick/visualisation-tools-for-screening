@@ -47,7 +47,9 @@ This python package contains subfolders: 'vis_tools', 'data', 'Shapefiles' and '
 <a name="installation"></a>
 A guide on installation of the package
 `pip install vistools_for_screening`  
-Environment required to run this package is contained in the environment.yml file. To set up the environment:  
+
+The environment required to run this package is contained in the environment.yml file.  
+To set up the environment:  
 `conda env create -n NEW_NAME --file environment.yml` 
 
 # External Resources and References 

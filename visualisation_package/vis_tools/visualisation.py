@@ -1229,7 +1229,7 @@ class Country_Analysis(DataframePreprocessing):
         return self.clean_df['Value'].idxmin()
     
     def plot_value_across_years(self):
-         """
+        """
         Function to plot the change in 'Value' for each year in the dataframe.
             
         Parameters

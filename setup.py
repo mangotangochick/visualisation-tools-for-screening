@@ -11,7 +11,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="visualisation-tools-for-screening666",
+    name="vistools_for_screening666",
     version=__version__,
     author="Ieva, Frances, Alistair",
     # I've created a specific email account before and forwarded to my own.

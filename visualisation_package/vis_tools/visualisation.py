@@ -106,7 +106,7 @@ class DataframePreprocessing:
         # Return the updated dataframe
         return temp_df
 
-class Region_Analysis(Dataframe_preprocessing):
+class Region_Analysis(DataframePreprocessing):
     """
     Class to create a choropleth map of the country to show the percentage uptake of screening for each
     region, animating to show the change across the dataset time period (2010-2016). 

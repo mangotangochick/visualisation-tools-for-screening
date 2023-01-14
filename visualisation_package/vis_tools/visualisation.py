@@ -288,11 +288,11 @@ class Region_Analysis(DataframePreprocessing):
             encountered in attempting to create the map.
         """
 
-        # Create two filtered dataframes of only the regions; 
-        # one for a specified year, 
+        # Create two filtered dataframes of only the regions;
+        # one for a specified year,
         # and the other with data for all years
         self.all_years_regions_df, self.regions_df = self.get_all_regions()
-        # Create a list of 'Area Code's for all regions 
+        # Create a list of 'Area Code's for all regions
         # for accessing regions & querying dataset
         region_codes = self.get_all_region_area_codes()
 
@@ -434,14 +434,12 @@ class Region_Analysis(DataframePreprocessing):
         # Set hovertemplate for map (displayed text when hovering on region)
         fig.update_traces(
             hovertemplate="".join(
-                ["%{customdata[1]}", "<br><b>", "%{customdata[0]:0.2f}", "%", 
-                "</b>"]
+                ["%{customdata[1]}", "<br><b>", "%{customdata[0]:0.2f}", "%", "</b>"]
             )
         )
 
         # Present the map to the user
         fig.show()
-
 
     def display_area_polygon(self, area_code):
         """
@@ -575,8 +573,7 @@ class Region_Analysis(DataframePreprocessing):
                 # Get 'Value' at current year from the all years dataframe
                 val = self.all_years_regions_df.loc[
                     (self.all_years_regions_df["Area Code"] == code)
-                    & (self.all_years_regions_df["Time period"] == 2016 - (i + \
-                        1)),
+                    & (self.all_years_regions_df["Time period"] == 2016 - (i + 1)),
                     "Value",
                 ].values[0]
                 # Alter the new dataframe 'value' to the correct value for year.
@@ -655,20 +652,17 @@ class Region_Analysis(DataframePreprocessing):
         """
 
         # Get the polygon coordinates data from the API request
-        geoshape, was_error = \
-            self.get_geoshape_info_from_api_request_for_areacode(
+        geoshape, was_error = self.get_geoshape_info_from_api_request_for_areacode(
             area_code
         )
 
         # If no error encountered requesting API data
         if not was_error:
             # Convert the API data to usable coordinates
-            polygon_coordinates = \
-                self.convert_geoshape_to_polygon_coordinates(geoshape)
+            polygon_coordinates = self.convert_geoshape_to_polygon_coordinates(geoshape)
             # Create a geopandas dataframe using the cooridnates for the region
-            geodataframe = \
-                self.create_geodataframe_with_area_data(polygon_coordinates)
-            # Return the created dataframe, and a False to indicate no errors. 
+            geodataframe = self.create_geodataframe_with_area_data(polygon_coordinates)
+            # Return the created dataframe, and a False to indicate no errors.
             return geodataframe, False
 
         # If an error is encountered when requesting data.
@@ -761,8 +755,7 @@ class Region_Analysis(DataframePreprocessing):
             for child in parent_lst:
                 # Recursive call of the method to search the current elements
                 # sublist for cooridnates.
-                child_poly_coords = \
-                    self.recursive_check_for_polygon_coords(child)
+                child_poly_coords = self.recursive_check_for_polygon_coords(child)
                 # For each returned polygon outline from the recursive call
                 for coords in child_poly_coords:
                     # Add the coordinates to the list of coordinates to be
@@ -855,8 +848,7 @@ class Region_Analysis(DataframePreprocessing):
 
             # Add the current 'Area Name' to the dataframe entry
             rgn_name = self.regions_df.loc[
-                self.regions_df["Area Code"] == \
-                    self.current_area_code, "Area Name"
+                self.regions_df["Area Code"] == self.current_area_code, "Area Name"
             ].values[0]
             newdata.loc[i, "area_name"] = rgn_name.replace(" region", "")
 
@@ -888,13 +880,11 @@ class Region_Analysis(DataframePreprocessing):
         """
 
         # Filter the dataframe to only include regions
-        filtered_regions_df = self.init_df[self.init_df["Area Type"] == \
-            "Region"]
+        filtered_regions_df = self.init_df[self.init_df["Area Type"] == "Region"]
         # Copy the dataframe to another, for a year specific dataframe
         year_regions_df = filtered_regions_df.copy(deep=True)
         # Filter the updated dataframe to only include entries for one year
-        year_regions_df = year_regions_df[year_regions_df["Time period"] == \
-            2016]
+        year_regions_df = year_regions_df[year_regions_df["Time period"] == 2016]
         # Return the two filtered dataframes
         return filtered_regions_df, year_regions_df
 
@@ -912,17 +902,17 @@ class LondonMap:
     Returns:
     None
     """
-    
-    def __init__(self, df, time_period = int, val_labels = bool):
+
+    def __init__(self, df, time_period=int, val_labels=bool):
         """
-        The __init__ function initializes an object with the given dataframe, 
+        The __init__ function initializes an object with the given dataframe,
         time period and label value.
         """
         self.df = df
         self.time_period = time_period
         self.val_labels = val_labels
-        
-    def plot_london_map(self, colour_palette = 'blue'):
+
+    def plot_london_map(self, colour_palette="blue"):
         """
         The plot_london_map function plots a map of London based on the given
         parameters. It takes a colour palette as an optional argument, with the
@@ -931,19 +921,20 @@ class LondonMap:
         input.
 
         Parameters:
-            df (pandas dataframe): 
+            df (pandas dataframe):
                 Dataframe containing the values of the map
-            time_period (int): 
+            time_period (int):
                 An integer representing a year (2010-2016)
-            val_labels (bool): 
+            val_labels (bool):
                 Boolean value indicating whether labels should be added to the
                 map.
-            colour_palette (str): 
+            colour_palette (str):
                 A string indicating the colour palette used for the map (blue,
                 green, fire)
         """
-        filepath = os.path.join(package_dir, 'shape_files',
-        'London_Borough_Excluding_MHW.shp')
+        filepath = os.path.join(
+            package_dir, "shape_files", "London_Borough_Excluding_MHW.shp"
+        )
         loc_auth = gpd.read_file(filepath)
 
         # Define Time-periods
@@ -966,8 +957,7 @@ class LondonMap:
             self.df["Value"] = self.df["Area Name"].map(mean_values)
 
         # Merge shapefile with dataset
-        ldn_map = loc_auth.merge(self.df, left_on="GSS_CODE",
-        right_on="Area Code")
+        ldn_map = loc_auth.merge(self.df, left_on="GSS_CODE", right_on="Area Code")
 
         # Set figure size
         plt.figure(figsize=(20, 10))
@@ -1002,18 +992,19 @@ class LondonMap:
                     fontsize=20,
                 )
                 plt.annotate(
-                    str(round(row["Value"], 1)), xy=(row["geometry"].centroid.x, 
-                    row["geometry"].centroid.y - 700),
-                    horizontalalignment="right", fontsize=20,
+                    str(round(row["Value"], 1)),
+                    xy=(row["geometry"].centroid.x, row["geometry"].centroid.y - 700),
+                    horizontalalignment="right",
+                    fontsize=20,
                 )
         else:
-            plt.title(f"UK Screening Uptake by London Borough Means",
-            fontsize=50)
+            plt.title(f"UK Screening Uptake by London Borough Means", fontsize=50)
             for idx, row in ldn_map.iterrows():
                 plt.annotate(
-                    row["Area Name"], xy=(row["geometry"].centroid.x,
-                    row["geometry"].centroid.y),
-                    horizontalalignment="center", fontsize=20,
+                    row["Area Name"],
+                    xy=(row["geometry"].centroid.x, row["geometry"].centroid.y),
+                    horizontalalignment="center",
+                    fontsize=20,
                 )
                 if self.val_labels == True:
                     plt.annotate(
@@ -1032,11 +1023,11 @@ class LondonMap:
 
 
 class Rank_Based_Graph:
-    '''
+    """
     Plots animated graphs, which demonstrate the ranking of the chosen areas or
-    regions by the proportion of people screened. 
-    Two types of animated graphs available: bar, scatter. 
-    
+    regions by the proportion of people screened.
+    Two types of animated graphs available: bar, scatter.
+
     Attributes:
     -----------
     df: pandas DataFrame
@@ -1049,7 +1040,8 @@ class Rank_Based_Graph:
     animated_bars() - plots comparison plot of the ranking of chosen regions.
     animated_scatter() - plots comparison plot of the ranking of chosen regions.
 
-    '''
+    """
+
     def __init__(self, df):
         self.df = df
 
@@ -1072,8 +1064,7 @@ class Rank_Based_Graph:
 
     def clean_rank(
         self,
-        list_reg=["East of England region", "London region",
-        "South East region"],
+        list_reg=["East of England region", "London region", "South East region"],
         area_type="Region",
     ):
         """
@@ -1135,8 +1126,7 @@ class Rank_Based_Graph:
         # color palette
         area_name = list(set(df_clean["Area Name"]))
         pal = list(
-            sns.color_palette(palette=sns_palette, 
-            n_colors=len(area_name)).as_hex()
+            sns.color_palette(palette=sns_palette, n_colors=len(area_name)).as_hex()
         )
         dict_color = dict(zip(area_name, pal))
         return dict_color
@@ -1196,8 +1186,7 @@ class Rank_Based_Graph:
             xaxis=dict(tickmode="linear", dtick=1),
         )
         fig.update_traces(textfont_size=rank_text_size, textangle=0)
-        pyo.plot(fig, filename="plots/animated_rank_from_list.html",
-        auto_open=open)
+        pyo.plot(fig, filename="plots/animated_rank_from_list.html", auto_open=open)
         pyo.iplot(fig)
 
     def animated_scatter(
@@ -1245,12 +1234,9 @@ class Rank_Based_Graph:
         years = list(set(self.df["Time period"]))
         years.sort()
 
-        df_cleaned["Position"] = [years.index(i) \
-            for i in df_cleaned["Time period"]]
-        df_cleaned["Val_str"] = [str(round(i, 2)) \
-            for i in df_cleaned["Value"]]
-        df_cleaned["Val_text"] = [str(round(i, 2)) + " %" \
-            for i in df_cleaned["Value"]]
+        df_cleaned["Position"] = [years.index(i) for i in df_cleaned["Time period"]]
+        df_cleaned["Val_str"] = [str(round(i, 2)) for i in df_cleaned["Value"]]
+        df_cleaned["Val_text"] = [str(round(i, 2)) + " %" for i in df_cleaned["Value"]]
         fig = px.scatter(
             df_cleaned,
             x="Position",
@@ -1266,11 +1252,12 @@ class Rank_Based_Graph:
         )
         fig.update_xaxes(title="", visible=False)
         fig.update_yaxes(
-            autorange="reversed", title="Rank", visible=True, 
-            showticklabels=True
+            autorange="reversed", title="Rank", visible=True, showticklabels=True
         )
         fig.update_layout(
-            xaxis=dict(showgrid=False), yaxis=dict(showgrid=True), width=width,
+            xaxis=dict(showgrid=False),
+            yaxis=dict(showgrid=True),
+            width=width,
             height=height,
         )
         fig.update_traces(textposition="middle left")
@@ -1321,8 +1308,7 @@ class Analysis_Plot:
     def __init__(self, in_dimensions, title, x_label, y_label, show_legend):
         self.dimensions = in_dimensions
         self.fig = plt.figure(
-            figsize=(self.dimensions[0], self.dimensions[1]),
-            facecolor=("#D3D3D3")
+            figsize=(self.dimensions[0], self.dimensions[1]), facecolor=("#D3D3D3")
         )
         self.ax = self.fig.add_subplot()
         self.legend_visible = show_legend
@@ -1506,8 +1492,7 @@ class Country_Analysis(DataframePreprocessing):
         plt.show()
 
     def lineplot_cancer_England(
-        self, cervical_df=load_cerv(), breast_df=load_breast(), 
-        bowel_df=load_bowel()
+        self, cervical_df=load_cerv(), breast_df=load_breast(), bowel_df=load_bowel()
     ):
         """
         This function takes in three dataframes from the default datasets

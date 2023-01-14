@@ -50,8 +50,10 @@ class DeprivationPlots():
             fig.set_size_inches(30, 10)
             ax[0].tick_params(axis='x', labelrotation=45)
             ax[1].tick_params(axis='x', labelrotation=45)
-            ax[0].set_facecolor('#ffd3e5')
-            ax[1].set_facecolor('#d3f2ff')
+            ax[0].set_facecolor('#FC9D9A')
+            ax[1].set_facecolor('#C8C8A9')
+            ax[0].set_title(f'Percentage Uptake for Most Deprived Deciles in the year {year}')
+            ax[1].set_title(f'Percentage Uptake for Least Deprived Deciles in the {year}')
             
             for p in ax[0].patches:
                 ax[0].annotate(
@@ -70,16 +72,13 @@ class DeprivationPlots():
             for ax in [ax[0], ax[1]]:
                 for i, rect in enumerate(ax.patches):
                     if df_most['Category Type'].str.contains('County').iloc[i]:
-                        rect.set_facecolor('#7B8788')
+                        rect.set_facecolor('#FE4365')
                     elif df_most['Category Type'].str.contains('District').iloc[i]:
-                        rect.set_facecolor('#F5A9E1')
+                        rect.set_facecolor('#83AF9B')
                     elif df_least['Category Type'].str.contains('County').iloc[i]:
-                        rect.set_facecolor('#7B8788')
+                        rect.set_facecolor('#FE4365')
                     elif df_least['Category Type'].str.contains('District').iloc[i]:
-                        rect.set_facecolor('#F5A9E1')
-
-            ax.legend()
-            plt.show()
-
+                        rect.set_facecolor('#83AF9B')
 
         plt.show()
+

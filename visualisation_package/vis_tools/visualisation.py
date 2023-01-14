@@ -854,28 +854,6 @@ class Rank_Based_Graph:
         fig.update_traces(textfont_size=rank_text_size, textangle=0)
         pyo.plot(fig, filename='plots/animated_rank_from_list.html', auto_open=open)
         pyo.iplot(fig)
-            
-
-        
-    def plot_full_animated_graph(self, area_type = 'Region', sns_palette="Spectral",
-                        width=800, height=600, showlegend=False,
-                        rank_text_size=16):
-        '''
-        region_lst = self.df.loc[self.df.loc['Area Type'] == area_type]['Area Name'].to_list()
-        region_df = self.clean_rank(list_reg=region_lst, area_type=area_type)
-        dict_color = self.color_pal(region_df, sns_palette=sns_palette)'''
-        region_df = self.df[self.df['Area Type'] == area_type]
-        fig = px.bar(region_df, x='Area Name', y='Value', animation_frame='Time period', animation_group='Area Name',
-                     range_y=[region_df['Value'].min() - 10, region_df['Value'].max() + 10],
-                     labels={ 'Value': 'Proportion Screened, %'},
-                     hover_name='Area Name',
-                     color='Area Name',
-                     title='Region Ranking Change')
-        fig.update_layout(width=width, height=height, showlegend=showlegend,
-                xaxis = dict(tickmode = 'linear', dtick = 1))
-        fig.update_traces(textfont_size=rank_text_size, textangle=0)
-        pyo.plot(fig, filename='plots/animated_rank_full.html', auto_open=False)
-        pyo.iplot(fig)
 
 
     def animated_scatter(self, area_type="LA", list_reg=[
@@ -922,10 +900,6 @@ def visualise_rank(area_type="LA", list_reg=[
                     rank_text_size=rank_text_size)
     Rank_Based_Graph(df).animated_bars(area_type=area_type, 
                     list_reg=list_reg, sns_palette=sns_palette,
-                    width=width, height=height, showlegend=showlegend,
-                    rank_text_size=rank_text_size)
-    Rank_Based_Graph(df).plot_full_animated_graph(area_type="Region", 
-                    sns_palette=sns_palette,
                     width=width, height=height, showlegend=showlegend,
                     rank_text_size=rank_text_size)
     plt.show()

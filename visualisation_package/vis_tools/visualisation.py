@@ -19,9 +19,11 @@ Rank_Based_Graphs:
     Bar chart with: animated_bars()
     Scatter plot with: animated_scatter()
 
-
-
+Country_Analysis:
+    Class to analyse overall country trends in the datasets and create line
+    plots to visualise the trends.
 """
+
 import os
 import pandas as pd
 import geopandas as gpd
@@ -922,10 +924,11 @@ class LondonMap:
         
     def plot_london_map(self, colour_palette = 'blue'):
         """
-        The plot_london_map function plots a map of London based on the given parameters. 
-        It takes a colour palette as an optional argument, with the default value being 'blue'. 
-        The map displays either the mean value of a given time period or all values of that period,
-        depending on the user's input.
+        The plot_london_map function plots a map of London based on the given
+        parameters. It takes a colour palette as an optional argument, with the
+        default value being 'blue'. The map displays either the mean value of a
+        given time period or all values of that period, depending on the user's
+        input.
 
         Parameters:
             df (pandas dataframe): 
@@ -933,11 +936,14 @@ class LondonMap:
             time_period (int): 
                 An integer representing a year (2010-2016)
             val_labels (bool): 
-                Boolean value indicating whether labels should be added to the map
+                Boolean value indicating whether labels should be added to the
+                map.
             colour_palette (str): 
-                A string indicating the colour palette used for the map (blue, green, fire)
+                A string indicating the colour palette used for the map (blue,
+                green, fire)
         """
-        filepath = os.path.join(package_dir, 'shape_files', 'London_Borough_Excluding_MHW.shp')
+        filepath = os.path.join(package_dir, 'shape_files',
+        'London_Borough_Excluding_MHW.shp')
         loc_auth = gpd.read_file(filepath)
 
         # Define Time-periods

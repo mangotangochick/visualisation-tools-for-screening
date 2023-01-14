@@ -43,10 +43,13 @@ This python package contains subfolders: 'vis_tools', 'data', 'Shapefiles' and '
 ![Feature Overview Map](visualisation_package/images/feature_overview.png?raw=true "Feature Overview Map")
 
 
-# Installation
+# Installation and setting up environment
 <a name="installation"></a>
 A guide on installation of the package
-`pip install visualisation-tools-for-screening`
+`pip install vistools_for_screening`
+Environment required to run this package is contained in the environment.yml file.
+To set up the environment:
+'conda env create -n NEW_NAME --file environment.yml'
 
 # External Resources and References 
 <a name="refs"></a>

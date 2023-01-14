@@ -36,6 +36,7 @@ import ast
 from fiona.crs import from_epsg
 import shapefile as shp # pyshp
 import pyproj
+import math
 from datasets import *
 
 class DataframePreprocessing:
@@ -120,15 +121,21 @@ class Region_Analysis(DataframePreprocessing):
          
     Parameters
     ----------
-    None
+    colorscale: String
+        A string identifying the plotly express colorscale to be used for styling
+        the graph.
     
     Returns
     -------
     None
     """
     
-    def __init__(self):
+    def __init__(self, colorscale):
         super().__init__()
+        
+        # Check whether or not the input colorscale is acceptable, and set accordingly
+        self.colorscale = self.process_colorscale(colorscale)
+        
         # Set the name to be used for storing shapefiles to be used for creating map visuals
         self.directory_name = 'Shapefiles'
         
@@ -139,6 +146,7 @@ class Region_Analysis(DataframePreprocessing):
         if was_error:
             # Indicate this to the user
             print('Creating map of regions failed. Please see previous logs for more information.')
+        
         
     def error_prevention_directory_check(self):
         """
@@ -166,6 +174,39 @@ class Region_Analysis(DataframePreprocessing):
             os.makedirs(self.directory_name)
             # Indicate the changes to the directory to user
             print('Created directory')
+            
+    def process_colorscale(self, in_colorscale):    
+        """
+        Function to check if the specified colorscale for the graph is a
+        recognised name. Allows the colorscale to be used if recognised,
+        or returns an alternative (default) setting if it is not recognised.
+        
+             
+        Parameters
+        ----------
+        in_colorscale: String
+            A string identifying the plotly express colorscale to be used for styling
+            the graph.
+        
+        Returns
+        -------
+        'mint': String
+            The default colorscale setting
+            
+        in_colorscale.lower(): String
+            The input colorscale, in lowercase form.
+        """
+        
+        # If the specified colorscale is not recognised
+        if in_colorscale.lower() not in px.colors.named_colorscales():
+            # Indicate to the user that it is not acceptable
+            print('Error setting colorscale: colorscale not recognised. Setting default instead.')
+            # Return default setting: 'mint'
+            return 'mint'
+        # If the specified colorscale is recognised
+        else:
+            # Return the colorscale as an acceptable option
+            return in_colorscale.lower()
         
     
     def create_map_of_all_regions(self):
@@ -257,13 +298,13 @@ class Region_Analysis(DataframePreprocessing):
         map_df = gpd.read_file(fp)
         # Correct the projection settings
         map_df.to_crs(pyproj.CRS.from_epsg(4326), inplace=True)
-        
+                
         # Create the Plotly express map using the created dataframe to populate it
         fig = px.choropleth(map_df,
                             geojson=map_df.geometry, 
                             locations=map_df.index,
                             color='value',
-                            color_continuous_scale='mint',
+                            color_continuous_scale=self.colorscale,
                             projection='orthographic',
                             hover_name='value',
                             hover_data=['value'],
@@ -281,6 +322,15 @@ class Region_Analysis(DataframePreprocessing):
                         landcolor='#cccccc')
         
         
+        # Calculate suitable color for slider:
+        # Convert the graph to a dictionary
+        graph_dict = fig.to_dict()
+        # Retrieve the specified colorscale from the dictionary
+        graph_color_scale = graph_dict['layout']['coloraxis']['colorscale']
+        # Select the middle (average) element in the list of colors
+        avg_color = graph_color_scale[math.floor(len(graph_color_scale)/2)][1]
+        
+        
         # Styling and layout settings for the plot
         fig.update_layout(
             title={
@@ -288,15 +338,15 @@ class Region_Analysis(DataframePreprocessing):
             'y':0.95,
             'x':0.5,
             'xanchor': 'center',
-            'yanchor': 'top'
+            'yanchor': 'top',
             },
             sliders=[{
                 'currentvalue': {'prefix': 'Year: '},
                 'len': 0.6,
                 'xanchor': 'left',
-                'bgcolor': '#519793'
+                'bgcolor': avg_color
                 }],
-            margin={'r':0,'t':100,'l':10,'b':10},
+            margin={'r':0,'t':100,'l':5,'b':0},
             width=800,
             coloraxis_colorbar={
                 'title':'% Uptake',
@@ -304,7 +354,7 @@ class Region_Analysis(DataframePreprocessing):
                 'borderwidth': 2,
                 'orientation': 'v',
                 'x': 0,
-                'xpad': 30,
+                'xpad': 10,
                 'xanchor': 'left'
                 }
         )
@@ -327,6 +377,14 @@ class Region_Analysis(DataframePreprocessing):
                 
         # Present the map to the user
         fig.show()
+        
+        #layout.colorscales.sequential 
+        #px.colors.sequential.
+        
+        # Convert the continuous color scale into a list of colors
+        #sequential_colors = px.colors.sequential.Mint
+        # Select the middle element in list of colors to get a theme color for slider
+        #color_from_scale = sequential_colors[math.floor(len(sequential_colors)/2)]
         
     
     def display_area_polygon(self, area_code):
@@ -726,10 +784,10 @@ class Region_Analysis(DataframePreprocessing):
         
         Returns
         -------
-        filtered_regions_df:
+        filtered_regions_df: Pandas dataframe
             A dataframe containing only region data, for all years
             
-        year_regions_df:
+        year_regions_df: Pandas dataframe
             A dataframe containing only region data, for a specified year
         """
         

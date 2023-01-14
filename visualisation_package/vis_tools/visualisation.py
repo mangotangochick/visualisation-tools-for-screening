@@ -399,8 +399,7 @@ class Region_Analysis(DataframePreprocessing):
         # Styling and layout settings for the plot
         fig.update_layout(
             title={
-                "text": "Choropleth map to show % uptake of screening<br> for \
-                    England regions from 2010 to 2016",
+                "text": "Choropleth map to show % uptake of screening<br> for England regions from 2010 to 2016",
                 "y": 0.95,
                 "x": 0.5,
                 "xanchor": "center",

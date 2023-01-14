@@ -771,14 +771,13 @@ class Rank_Based_Graph:
         # Selects areas we want to compare
         self.df = self.df[self.df["Area Type"]==area_type]
         # Selects which regions to compare
-        list_select=list_reg
-        df_select = self.df[self.df['Area Name'].isin(list_select)]
+        df_select = self.df[self.df['Area Name'].isin(list_reg)]
         # Changing the data type into string:
         df_select = df_select.astype({'Area Name': str})
         df_select.reset_index(inplace=True)
-        df_year = df_select
-        if "index" in df_year.columns:
-            df_year = df_year.drop(columns=["index"])
+        # Drops the index column, if one is present.
+        if "index" in df_select.columns:
+            df_year = df_select.drop(columns=["index"])
     
         # Splitting data into dfs by the year and ranking based on Value.
         keep = []
@@ -861,7 +860,8 @@ class Rank_Based_Graph:
                         width=800, height=600, showlegend=False,
                         rank_text_size=16):
         
-        region_df = self.df[self.df.loc['Area Type'] == area_type]
+        region_lst = self.df.loc[self.df['Area Type'] == area_type]['Area Name'].to_list()
+        region_df = self.clean_rank(list_reg=region_lst, area_type=area_type)
         dict_color = self.color_pal(region_df, sns_palette=sns_palette)
         fig = px.bar(region_df, x='Area Name', y='Value', animation_frame='Time period', animation_group='Area Name',
                      range_y=[region_df['Value'].min() - 10, region_df['Value'].max() + 10],

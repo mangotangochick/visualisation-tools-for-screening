@@ -1186,8 +1186,7 @@ class Rank_Based_Graph:
             xaxis=dict(tickmode="linear", dtick=1),
         )
         fig.update_traces(textfont_size=rank_text_size, textangle=0)
-        pyo.plot(fig, filename="plots/animated_rank_from_list.html", auto_open=open)
-        pyo.iplot(fig)
+        fig.show()
 
     def animated_scatter(
         self,

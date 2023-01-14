@@ -1,5 +1,5 @@
 # Visualisation Tools for Screening
-## Version 0.3.0
+## Version 1.0.0
 
 # Package Purpose
 
@@ -36,4 +36,4 @@ This python package contains three subfolders: 'vis_tools', 'data' and 'testing'
 # Demo Project
 Please see the demo.ipynb file for a Jupyter notebook containing an annotated demo project
 
-![Region Analysis Map](visualisation_package/images/region_analysis.png "Region Analysis Map")
+![Region Analysis Map](visualisation_package/images/region_analysis1.png "Region Analysis Map")

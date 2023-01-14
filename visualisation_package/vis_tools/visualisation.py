@@ -520,7 +520,7 @@ class Region_Analysis(DataframePreprocessing):
         # Correct the projection settings
         merged_df.crs = from_epsg(4326)
         
-        # Change the datatype of the year column to integer to reduce storage requirements
+        # Change the datatype of the 'year' column to integer to reduce storage requirements
         merged_df = merged_df.astype({'year': np.int32})
                 
         # Iterate through each region using collected region codes
@@ -529,7 +529,7 @@ class Region_Analysis(DataframePreprocessing):
             self.current_area_code = code
             # Create a dataframe for the current region
             geodf, was_error = self.create_region_geodf(code)
-            # Change the datatype of the year column to match that of the combined dataframe
+            # Change the datatype of the 'year' column to match that of the combined dataframe
             geodf = geodf.astype({'year': np.int32})
             
             # Rather than calculating geometries at each year, 
@@ -1115,27 +1115,64 @@ class Analysis_Plot:
             self.ax.legend()
 
             
-# get statistics for country as a whole (class inherits from DataframePreprocessing)
 class Country_Analysis(DataframePreprocessing):
+    """
+    Class to analyse overall country trends in the datasets and create line plots to 
+    visualise the trends. Provides visualisation tools and analysis methods.
+
+    This class inherits from the 'Dataframe_preprocessing' class, and therefore shares all its methods.
+         
+    Parameters
+    ----------
+    None
+    
+    Returns
+    -------
+    None
+    """
     
     def __init__(self):
         super().__init__()
         
+        # Clean the dataframe, removing redundant columns, for processing
         self.clean_df = self.clean_data_for_country_analysis(self.processed_df)
         
+        # Create and display a line plot to visualise the data
         self.plot_value_across_years()
         
+        # Get the year with the highest uptake
         highest_year = self.get_year_with_highest_val()
         print(f'highest_year = {highest_year}')
         
+        # Get the year with the lowest uptake
         lowest_year = self.get_year_with_lowest_val()
         print(f'lowest_year = {lowest_year}')
         
     def clean_data_for_country_analysis(self, in_df):
+        """
+        Function to clean the dataframe, filtering the dataframe and removing redundant columns, for further processing.
+            
+        Parameters
+        ----------
+        in_df: Pandas dataframe
+            The dataframe to be cleaned. The expected dataframe contains a variety of columns that are
+            not required for these analysis functions or plots (such as 'Area Name').
+        
+        Returns
+        -------
+        filtered_df: Pandas dataframe
+            The cleaned dataframe. This is a filtered version of the initial dataset, with only the
+            necessary columns.
+        """
+
+        # Filter the dataframe the only contain entries that have the 'Area Type' of 'Country'
         filtered_df = in_df[in_df['Area Type'] == 'Country']
+        # Filter the dataframe to only contain entries that have a null 'Value note'
         filtered_df = filtered_df[filtered_df['Value note'].isnull()]
+        # Filter the dataframe to only contain entries that have a null 'Category'
         filtered_df = filtered_df[filtered_df['Category'].isnull()]
         
+        # Remove redundant columns from the dataframe
         filtered_df = filtered_df.drop(labels=['Area Name'], axis=1)
         filtered_df = filtered_df.drop(labels=['Area Code'], axis=1)
         filtered_df = filtered_df.drop(labels=['Area Type'], axis=1)
@@ -1143,32 +1180,84 @@ class Country_Analysis(DataframePreprocessing):
         filtered_df = filtered_df.drop(labels=['Category'], axis=1)
         filtered_df = filtered_df.drop(labels=['Category Type'], axis=1)
         
-                        
+        # Rename the 'Time period' column for improved readability and accessibility
         filtered_df.rename(columns={'Time period':'year'}, inplace=True)
+
+        # Change the datatype of the 'year' column to integer to reduce storage requirements
+        filtered_df = filtered_df.astype({'year': np.int32})
         
-        # set index to year
+        # Set the dataframe index to the 'year' column as this is now a unique identifier
         filtered_df.set_index('year', inplace=True)
         
+        # Return the cleaned dataframe
         return filtered_df
     
     def get_year_with_highest_val(self):
+        """
+        Function to identify from the data, and return, the year in which the uptake in screening was at its highest.
+            
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        self.clean_df['Value'].idxmax(): int
+            The index of the row in the dataframe that has the highest entry in the 'Value' column;
+            where the index of the dataframe is the 'year' column, therefore, the returned index is
+            the year.
+        """
+        # Return the index of the row in the dataframe that has the highest entry in the 'Value' column
         return self.clean_df['Value'].idxmax()
     
     def get_year_with_lowest_val(self):
+        """
+        Function to identify from the data, and return, the year in which the uptake in screening was at its lowest.
+            
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        self.clean_df['Value'].idxmin(): int
+            The index of the row in the dataframe that has the lowest entry in the 'Value' column;
+            where the index of the dataframe is the 'year' column, therefore, the returned index is
+            the year.
+        """
+        # Return the index of the row in the dataframe that has the lowest entry in the 'Value' column
         return self.clean_df['Value'].idxmin()
     
     def plot_value_across_years(self):
+         """
+        Function to plot the change in 'Value' for each year in the dataframe.
+            
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+        """
+
+        # Set the title for the plot
         plot_title = 'How \'Value\' for England has changed between 2010 and 2016 for Cervical Cancer Screening Uptake (%)\n'
+        # Set the label for the x-axis of the plot
         x_label = 'Year'
+        # Set the label for the y-axis of the plot
         y_label = 'Value'
 
+        # Create an instance of 'Analysis_Plot' to create a figure for plotting
         plot = Analysis_Plot([8, 4], plot_title, x_label, y_label, False)
         
+        # Add the data to the created figure
         plot.ax.plot(self.clean_df['Value'], 'co-', label='England')
                 
-        # as 'show_legend' set to False, won't show legend
+        # Update the legend settings: as 'show_legend' is set to False, it won't show legend
         plot.update_legend()
 
+        # Display the plot
         plt.show()
 
     def lineplot_cancer_England(self, cervical_df=load_cerv(), breast_df=load_breast(), bowel_df=load_bowel()):

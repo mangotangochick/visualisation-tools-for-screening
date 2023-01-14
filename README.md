@@ -37,7 +37,7 @@ This python package contains subfolders: 'vis_tools', 'data', 'Shapefiles' and '
     * bowel_cancer_data.csv : dataset containing bowel cancer screening programme uptake across the UK from 2010-2016
     * breast_cancer_data.csv : dataset containing breast cancer screening programme uptake across the UK from 2010-2016
     * cervical_cancer_data.csv : dataset containing cervical cancer screening programme uptake across the UK from 2010-2016
-* [Shapefiles](visualisation_package/Shapefiles) contains shapefiles necessary for the Choropleth map to run
+* [Shapefiles](visualisation_package/vis_tools/Shapefiles) contains shapefiles necessary for the Choropleth map to run
 * [testing](visualisation_package/testing) contains a demo project, demonstrating the functionality and usage of the package
 
 ![Feature Overview Map](visualisation_package/images/feature_overview.png?raw=true "Feature Overview Map")
